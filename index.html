@@ -4177,7 +4177,7 @@ function setupAuthentication() {
 const STORAGE_KEY_NAME = 'omniverse_userName';
 const STORAGE_KEY_FIRST_VISIT = 'omniverse_firstVisit';
 const ADMIN_NAMES = ['praise', 'fawaz', 'kesther', 'marvelous']; // Admins (case-insensitive)
-const BANNED_NAME_REGEX = /(robot|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$)/i;
+const BANNED_NAME_REGEX = /(ai|robot|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$)/i;
 
 // Helper: Permanent block screen
 function blockAccess(message) {
@@ -4296,5 +4296,6 @@ window.OMNIVERSE = {
 // Initialize the site
 init();
 </script>
+
 
 
