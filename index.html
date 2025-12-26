@@ -248,6 +248,36 @@ nav.scrolled {
     border-radius: 20px;
     display: inline-block;
 }
+/* Settings Button in Navigation */
+.settings-btn-container {
+    margin-left: 0.5rem;
+}
+
+.settings-btn {
+    background: transparent;
+    border: none;
+    color: var(--secondary-color);
+    font-size: 1.6rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-btn:hover {
+    background: rgba(0, 191, 255, 0.15);
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(0, 191, 255, 0.3);
+}
+
+@media (max-width: 768px) {
+    .settings-btn {
+        font-size: 1.8rem;
+    }
+}
 .no-results {
     padding: 20px;
     text-align: center;
@@ -1809,7 +1839,6 @@ footer {
                 <i class="uil uil-bars"></i>
             </button>
             <ul class="nav-links" id="navLinks">
-                <li><a href="#contact" class="nav-link">Contact</a></li>
                 <li><a href="#bookmarks" class="nav-link">Bookmarks</a></li>
                 <li><a href="#premium" class="nav-link">Premium</a></li>
                 <li class="search-container">
@@ -1823,6 +1852,7 @@ footer {
                     <span class="sync-indicator" id="syncIndicator"></span>
                     <span id="syncStatus">Online</span>
                 </li>
+</li>
             </ul>
         </div>
     </nav>
@@ -4252,126 +4282,919 @@ function setupAuthentication() {
         updateUserUI(null);
     }
 }
-// Constants for name authentication
-const STORAGE_KEY_NAME = 'omniverse_userName';
-const STORAGE_KEY_FIRST_VISIT = 'omniverse_firstVisit';
-const ADMIN_NAMES = ['praise', 'fawaz',  'marvelous', 'henry']; // Admins (case-insensitive)
-const BANNED_NAME_REGEX = /(kesther|ai|robot|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$)/i;
+// ==================== INTEGRATED OMNIVERSE AUTHENTICATION SYSTEM ====================
 
-// Helper: Permanent block screen
-function blockAccess(message) {
-    alert(message);
-    document.body.innerHTML = `
-        <div style="font-family: 'Poppins', sans-serif; text-align: center; padding: 100px; background: #000; color: #fff; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-            <h1 style="font-size: 5rem; color: #e74c3c;">ACCESS BLOCKED</h1>
-            <h2 style="font-size: 2.5rem; margin: 20px 0;">You shall not pass.</h2>
-            <p style="font-size: 1.3rem; max-width: 600px;">${message}</p>
-            <p style="margin-top: 60px; color: #00FFFF; font-size: 1.1rem;">
-                This site is off-limits to automated entities.
-            </p>
-        </div>`;
-    document.body.style.overflow = 'hidden';
-    throw new Error('Access blocked');
-}
-
-// Social Bar: Greeting display
-function initSocialBar() {
-    const userName = localStorage.getItem(STORAGE_KEY_NAME);
-    const greetingEl = document.getElementById('userGreeting');
-
-    if (!greetingEl) {
-        console.warn('Element #userGreeting not found!');
-        return;
-    }
-
-    if (userName) {
-        const isAdmin = ADMIN_NAMES.includes(userName.toLowerCase());
-        greetingEl.innerHTML = `
-            Hello, <strong>${userName}</strong>
-            ${isAdmin ? '<span class="admin-badge">ADMIN</span>' : ''}
-        `;
-    } else {
-        greetingEl.innerHTML = 'Hello, Explorer';
-    }
-}
-// Add to your setupEventListeners() function
-document.addEventListener('keydown', function(e) {
-    // Ctrl+Shift+R to reset
-    if (e.ctrlKey && e.shiftKey && e.key === 'R') {
-        if (confirm('Reset all OMNIVERSE data?')) {
-            localStorage.clear();
-            location.reload();
+// Configuration object for better maintainability
+const OMNIVERSE_CONFIG = {
+    storage: {
+        userName: 'omniverse_userName_v2',
+        firstVisit: 'omniverse_firstVisit_v2',
+        lastVisit: 'omniverse_lastVisit',
+        visitCount: 'omniverse_visitCount',
+        userLevel: 'omniverse_userLevel'
+    },
+    admin: {
+        names: ['praise', 'fawaz', 'marvelous', 'henry', 'system'],
+        privileges: {
+            bypassCooldown: true,
+            accessDebug: true,
+            viewAnalytics: true
         }
+    },
+    security: {
+        bannedRegex: /(kesther|robot|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$|assistant|deepseek|huggingface|openai)/i,
+        minLength: 2,
+        maxLength: 25,
+        maxAttempts: 5,
+        cooldownTime: 30000 // 30 seconds
+    },
+    ui: {
+        theme: 'dark',
+        animations: true,
+        sounds: false
     }
-});
-// NAME PROMPT & AUTHENTICATION (Runs on page load)
-window.addEventListener('load', function () {
-    let userName = localStorage.getItem(STORAGE_KEY_NAME);
-
-    if (!userName) {
-        do {
-            userName = prompt(
-                'Welcome to OMNIVERSE! ✨\n\n' +
-                'Please enter your name to continue.\n' +
-                '(This helps prevent bots and personalize your experience)'
-            );
-
-            if (userName === null) {
-                blockAccess('Access denied. A name is required to enter OMNIVERSE.');
-                return;
-            }
-
-            userName = userName.trim();
-
-            if (userName === '') {
-                alert('Name cannot be empty. Please try again.');
-                continue;
-            }
-
-            if (BANNED_NAME_REGEX.test(userName)) {
-                blockAccess(
-                    'Sorry, names suggesting AI, robots, or artificial entities are not allowed.\n' +
-                    'Access permanently blocked for security reasons.'
-                );
-                return;
-            }
-
-            // Save valid name
-            localStorage.setItem(STORAGE_KEY_NAME, userName);
-            localStorage.setItem(STORAGE_KEY_FIRST_VISIT, 'false');
-
-            const isAdmin = ADMIN_NAMES.includes(userName.toLowerCase());
-            if (isAdmin) {
-                alert(`🔥 ADMIN ACCESS GRANTED 🔥\nWelcome, Admin ${userName}! 👑`);
-            } else {
-                alert(`Welcome to OMNIVERSE, ${userName}! ✨\nEnjoy exploring the stories! 📖`);
-            }
-
-            break;
-
-        } while (true);
-    } else {
-        // Returning user
-        const isAdmin = ADMIN_NAMES.includes(userName.toLowerCase());
-        if (isAdmin) {
-            alert(`Welcome back, Admin ${userName}! 👑🔥\nThe realm awaits your command.`);
-        } else {
-            alert(`Welcome back to OMNIVERSE, ${userName}! 🎉\nGreat to see you again!`);
-        }
-    }
-
-    // Make user info globally available
-    window.currentUserName = userName;
-    window.isAdmin = ADMIN_NAMES.includes(userName.toLowerCase());
-});
-
-// GLOBAL EXPORTS (for other scripts)
-window.OMNIVERSE = {
-    showStory: showStory,
-    hideStory: () => hideModal(storyReader),
-    searchStories: handleSearch
 };
 
-// Initialize the site
-init();
+// Enhanced User Class for better user management
+class UserManager {
+    constructor() {
+        this.currentUser = null;
+        this.attempts = 0;
+        this.lastAttempt = 0;
+    }
+
+    validateName(name) {
+        name = name.trim();
+        
+        // Length validation
+        if (name.length < OMNIVERSE_CONFIG.security.minLength || 
+            name.length > OMNIVERSE_CONFIG.security.maxLength) {
+            return {
+                valid: false,
+                message: `Name must be between ${OMNIVERSE_CONFIG.security.minLength} and ${OMNIVERSE_CONFIG.security.maxLength} characters`
+            };
+        }
+
+        // Character validation (only allow letters, numbers, spaces, and basic symbols)
+        if (!/^[a-zA-Z0-9\s\-_.]+$/.test(name)) {
+            return {
+                valid: false,
+                message: 'Name can only contain letters, numbers, spaces, dashes, dots, and underscores'
+            };
+        }
+
+        // Banned name check
+        if (OMNIVERSE_CONFIG.security.bannedRegex.test(name)) {
+            return {
+                valid: false,
+                message: 'Names suggesting AI/robots are not allowed',
+                blocked: true
+            };
+        }
+
+        // Common name detection (optional)
+        const commonNames = ['admin', 'root', 'system', 'user', 'test', 'guest'];
+        if (commonNames.includes(name.toLowerCase())) {
+            return {
+                valid: false,
+                message: 'Please use a more unique name',
+                warning: true
+            };
+        }
+
+        return { valid: true, name: name };
+    }
+
+    saveUser(name) {
+        const userData = {
+            name: name,
+            firstVisit: localStorage.getItem(OMNIVERSE_CONFIG.storage.firstVisit) || new Date().toISOString(),
+            lastVisit: new Date().toISOString(),
+            visitCount: this.getVisitCount() + 1,
+            isAdmin: OMNIVERSE_CONFIG.admin.names.includes(name.toLowerCase()),
+            level: this.calculateUserLevel(name)
+        };
+
+        localStorage.setItem(OMNIVERSE_CONFIG.storage.userName, name);
+        localStorage.setItem(OMNIVERSE_CONFIG.storage.firstVisit, userData.firstVisit);
+        localStorage.setItem(OMNIVERSE_CONFIG.storage.lastVisit, userData.lastVisit);
+        localStorage.setItem(OMNIVERSE_CONFIG.storage.visitCount, userData.visitCount);
+        localStorage.setItem(OMNIVERSE_CONFIG.storage.userLevel, userData.level);
+
+        this.currentUser = userData;
+        return userData;
+    }
+
+    getVisitCount() {
+        return parseInt(localStorage.getItem(OMNIVERSE_CONFIG.storage.visitCount)) || 0;
+    }
+
+    calculateUserLevel(name) {
+        const isAdmin = OMNIVERSE_CONFIG.admin.names.includes(name.toLowerCase());
+        const visits = this.getVisitCount();
+        
+        if (isAdmin) return 'admin';
+        if (visits > 10) return 'veteran';
+        if (visits > 5) return 'regular';
+        return 'newcomer';
+    }
+
+    clearUser() {
+        localStorage.removeItem(OMNIVERSE_CONFIG.storage.userName);
+        this.currentUser = null;
+    }
+
+    isRateLimited() {
+        const now = Date.now();
+        if (now - this.lastAttempt < OMNIVERSE_CONFIG.security.cooldownTime) {
+            return true;
+        }
+        this.lastAttempt = now;
+        return false;
+    }
+}
+
+// Enhanced Block Screen with more options
+function blockAccess(reason = 'Unknown violation') {
+    const blockReasons = {
+        'banned_name': 'AI/Robot name detected',
+        'rate_limit': 'Too many attempts',
+        'empty_name': 'Name cannot be empty',
+        'invalid_chars': 'Invalid characters in name'
+    };
+
+    const reasonText = blockReasons[reason] || reason;
+    const contactEmail = 'admin@omniverse.example.com';
+    
+    document.body.innerHTML = `
+        <div class="block-screen" style="
+            font-family: 'Poppins', sans-serif; 
+            text-align: center; 
+            padding: 50px; 
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            color: #fff; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 9999;
+        ">
+            <div style="
+                background: rgba(0, 0, 0, 0.7);
+                padding: 40px;
+                border-radius: 20px;
+                border: 2px solid #e74c3c;
+                max-width: 800px;
+                box-shadow: 0 0 50px rgba(231, 76, 60, 0.3);
+            ">
+                <h1 style="
+                    font-size: 4rem; 
+                    color: #e74c3c;
+                    margin-bottom: 20px;
+                    text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+                ">⛔ ACCESS RESTRICTED</h1>
+                
+                <div style="
+                    background: rgba(231, 76, 60, 0.1);
+                    padding: 20px;
+                    border-radius: 10px;
+                    margin: 20px 0;
+                ">
+                    <h2 style="font-size: 1.8rem; margin: 10px 0;">Reason: ${reasonText}</h2>
+                    <p style="font-size: 1.1rem; opacity: 0.9;">${getBlockMessage(reason)}</p>
+                </div>
+                
+                <div style="margin: 30px 0;">
+                    <p style="font-size: 1rem; color: #00FFFF;">
+                        <strong>ID:</strong> BLK-${Date.now().toString(36).toUpperCase()}
+                    </p>
+                    <p style="margin-top: 10px;">
+                        <strong>Timestamp:</strong> ${new Date().toLocaleString()}
+                    </p>
+                </div>
+                
+                <div style="
+                    background: rgba(0, 255, 255, 0.1);
+                    padding: 20px;
+                    border-radius: 10px;
+                    margin-top: 30px;
+                ">
+                    <p style="font-size: 1.1rem; margin-bottom: 15px;">
+                        If you believe this is a mistake, contact our support team:
+                    </p>
+                    <a href="mailto:${contactEmail}" style="
+                        color: #00FFFF;
+                        text-decoration: none;
+                        font-size: 1.2rem;
+                        padding: 10px 20px;
+                        border: 1px solid #00FFFF;
+                        border-radius: 5px;
+                        display: inline-block;
+                        transition: all 0.3s;
+                    " onmouseover="this.style.backgroundColor='rgba(0,255,255,0.1)'" 
+                       onmouseout="this.style.backgroundColor='transparent'">
+                        📧 Contact Support
+                    </a>
+                </div>
+                
+                <div style="margin-top: 40px; font-size: 0.9rem; opacity: 0.7;">
+                    <p>This site uses advanced detection to prevent automated access.</p>
+                    <p>Human verification required.</p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.style.overflow = 'hidden';
+    
+    // Log the block attempt
+    console.error(`[OMNIVERSE BLOCK] Reason: ${reasonText} | Time: ${new Date().toISOString()}`);
+    
+    // Prevent any further interaction
+    document.addEventListener('keydown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    });
+    
+    throw new Error(`Access blocked: ${reason}`);
+}
+
+function getBlockMessage(reason) {
+    const messages = {
+        'banned_name': 'The name you entered suggests automated or AI origin. Human names only.',
+        'rate_limit': 'Too many failed attempts detected. Please wait and try again.',
+        'empty_name': 'A valid name is required to access this realm.',
+        'invalid_chars': 'Special characters in name are not allowed.'
+    };
+    
+    return messages[reason] || 'Access violation detected. This incident has been logged.';
+}
+
+// Enhanced Authentication Flow
+async function initEnhancedAuth() {
+    const userManager = new UserManager();
+    
+    // Check for existing user
+    let userName = localStorage.getItem(OMNIVERSE_CONFIG.storage.userName);
+    
+    if (userName) {
+        // Returning user flow
+        const userData = userManager.saveUser(userName);
+        showWelcomeBack(userData);
+    } else {
+        // New user flow
+        await handleNewUser(userManager);
+    }
+    
+    // Make user info globally available
+    window.currentUser = userManager.currentUser;
+    window.userManager = userManager;
+    
+    // Initialize user interface
+    initEnhancedSocialBar();
+    initUserMenu();
+}
+
+async function handleNewUser(userManager) {
+    const maxAttempts = OMNIVERSE_CONFIG.security.maxAttempts;
+    
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        if (attempt > 1) {
+            alert(`Attempt ${attempt} of ${maxAttempts}. Please enter a valid name.`);
+        }
+        
+        const userName = await showNameModal(attempt === 1);
+        
+        if (!userName) {
+            blockAccess('empty_name');
+            return;
+        }
+        
+        const validation = userManager.validateName(userName);
+        
+        if (validation.blocked) {
+            blockAccess('banned_name');
+            return;
+        }
+        
+        if (!validation.valid) {
+            alert(validation.message);
+            continue;
+        }
+        
+        // Success - save user
+        const userData = userManager.saveUser(validation.name);
+        showWelcomeMessage(userData);
+        break;
+    }
+}
+
+function showNameModal(firstTime = true) {
+    return new Promise((resolve) => {
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(10px);
+        `;
+        
+        modal.innerHTML = `
+            <div style="
+                background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+                padding: 40px;
+                border-radius: 20px;
+                border: 2px solid #00FFFF;
+                max-width: 500px;
+                width: 90%;
+                box-shadow: 0 0 50px rgba(0, 255, 255, 0.2);
+                text-align: center;
+            ">
+                <h2 style="color: #00FFFF; margin-bottom: 20px;">
+                    ${firstTime ? '✨ Welcome to OMNIVERSE ✨' : '🔄 Update Your Identity'}
+                </h2>
+                
+                <p style="margin-bottom: 30px; opacity: 0.9;">
+                    ${firstTime ? 
+                        'Enter your name to begin your journey. This helps maintain a human-only community.' : 
+                        'Please enter a valid name to continue.'
+                    }
+                </p>
+                
+                <input type="text" 
+                       id="nameInput" 
+                       placeholder="Enter your name" 
+                       maxlength="${OMNIVERSE_CONFIG.security.maxLength}"
+                       style="
+                           width: 100%;
+                           padding: 15px;
+                           background: rgba(255, 255, 255, 0.1);
+                           border: 2px solid #0088FF;
+                           border-radius: 10px;
+                           color: white;
+                           font-size: 1.1rem;
+                           margin-bottom: 20px;
+                       ">
+                
+                <div style="
+                    background: rgba(0, 136, 255, 0.1);
+                    padding: 15px;
+                    border-radius: 10px;
+                    margin-bottom: 20px;
+                    text-align: left;
+                    font-size: 0.9rem;
+                ">
+                    <strong>Requirements:</strong>
+                    <ul style="margin: 5px 0 0 20px; padding: 0;">
+                        <li>${OMNIVERSE_CONFIG.security.minLength}-${OMNIVERSE_CONFIG.security.maxLength} characters</li>
+                        <li>Letters, numbers, spaces, dashes, dots only</li>
+                        <li>No AI/robot related names</li>
+                    </ul>
+                </div>
+                
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button onclick="submitName()" style="
+                        background: linear-gradient(135deg, #00FFFF, #0088FF);
+                        border: none;
+                        padding: 12px 30px;
+                        border-radius: 10px;
+                        color: black;
+                        font-weight: bold;
+                        cursor: pointer;
+                        flex: 1;
+                    ">
+                        Continue
+                    </button>
+                    ${!firstTime ? `
+                    <button onclick="cancelName()" style="
+                        background: rgba(255, 255, 255, 0.1);
+                        border: 1px solid #666;
+                        padding: 12px 30px;
+                        border-radius: 10px;
+                        color: white;
+                        cursor: pointer;
+                    ">
+                        Cancel
+                    </button>` : ''}
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        const input = modal.querySelector('#nameInput');
+        input.focus();
+        
+        window.submitName = () => {
+            const name = input.value.trim();
+            document.body.removeChild(modal);
+            resolve(name);
+        };
+        
+        window.cancelName = () => {
+            document.body.removeChild(modal);
+            resolve(null);
+        };
+        
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') window.submitName();
+        });
+    });
+}
+
+function showWelcomeMessage(userData) {
+    const message = userData.isAdmin ? 
+        `🔥 ADMIN ACCESS GRANTED 🔥\nWelcome, Admin ${userData.name}! The realm awaits your command. 👑` :
+        `🎉 Welcome to OMNIVERSE, ${userData.name}! ✨\nEnjoy exploring the stories! 📖\n\nYou are a ${userData.level}.`;
+    
+    // Fancy notification
+    showOmniverseNotification(message, userData.isAdmin ? 'admin' : 'welcome');
+}
+
+function showWelcomeBack(userData) {
+    const messages = {
+        admin: `👑 Welcome back, Admin ${userData.name}! \nSession ${userData.visitCount} initialized. 🔥`,
+        veteran: `🌟 Welcome back, ${userData.name}! \nGood to see you again (visit #${userData.visitCount}).`,
+        regular: `👋 Welcome back, ${userData.name}! \nContinue your journey (visit #${userData.visitCount}).`,
+        newcomer: `🚀 Welcome back, ${userData.name}! \nNice to see you again!`
+    };
+    
+    const message = userData.isAdmin ? messages.admin : messages[userData.level];
+    showOmniverseNotification(message, 'info');
+}
+
+function showOmniverseNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    const colors = {
+        admin: { bg: 'linear-gradient(135deg, #FFD700, #FF8C00)', color: '#000' },
+        welcome: { bg: 'linear-gradient(135deg, #00FFFF, #0088FF)', color: '#000' },
+        info: { bg: 'rgba(0, 255, 255, 0.2)', color: '#00FFFF' }
+    };
+    
+    const style = colors[type] || colors.info;
+    
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: ${style.bg};
+        color: ${style.color};
+        padding: 15px 25px;
+        border-radius: 10px;
+        z-index: 1001;
+        font-weight: bold;
+        text-align: center;
+        min-width: 300px;
+        max-width: 500px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        animation: slideDown 0.3s ease-out;
+        backdrop-filter: blur(10px);
+        border: 1px solid ${type === 'admin' ? '#FFD700' : '#00FFFF'};
+    `;
+    
+    notification.innerHTML = message.replace(/\n/g, '<br>');
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(-50%) translateY(-20px)';
+        setTimeout(() => document.body.removeChild(notification), 300);
+    }, 3000);
+}
+
+// Enhanced Social Bar with more features
+function initEnhancedSocialBar() {
+    const userName = localStorage.getItem(OMNIVERSE_CONFIG.storage.userName);
+    const greetingEl = document.getElementById('userGreeting') || createSocialBar();
+    
+    if (!userName) {
+        greetingEl.innerHTML = '<span style="opacity:0.8">Welcome, Guest</span>';
+        return;
+    }
+    
+    const isAdmin = OMNIVERSE_CONFIG.admin.names.includes(userName.toLowerCase());
+    const visitCount = parseInt(localStorage.getItem(OMNIVERSE_CONFIG.storage.visitCount)) || 1;
+    const userLevel = localStorage.getItem(OMNIVERSE_CONFIG.storage.userLevel) || 'newcomer';
+    
+    greetingEl.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                background: ${isAdmin ? 'linear-gradient(135deg, #FFD700, #FFA500)' : 'linear-gradient(135deg, #00FFFF, #0088FF)'};
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                color: #000;
+                font-size: 14px;
+            ">
+                ${userName.charAt(0).toUpperCase()}
+            </div>
+            
+            <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <strong>${userName}</strong>
+                    ${isAdmin ? '<span class="admin-badge" style="background: #FFD700; color: #000; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; font-weight: bold;">ADMIN</span>' : ''}
+                    <span class="level-badge" style="background: #333; color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem;">
+                        ${userLevel.toUpperCase()}
+                    </span>
+                </div>
+                <small style="opacity: 0.7; font-size: 0.8rem;">
+                    Visit #${visitCount}
+                </small>
+            </div>
+            
+            <button onclick="showUserMenu()" style="
+                background: none;
+                border: none;
+                color: #00FFFF;
+                cursor: pointer;
+                font-size: 1.2rem;
+                margin-left: 10px;
+            ">
+                ⚙️
+            </button>
+        </div>
+    `;
+}
+
+function createSocialBar() {
+    const bar = document.createElement('div');
+    bar.id = 'userGreeting';
+    bar.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.8);
+        padding: 10px 15px;
+        border-radius: 10px;
+        border: 1px solid #00FFFF;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+        min-width: 200px;
+    `;
+    document.body.appendChild(bar);
+    return bar;
+}
+
+// User Menu System
+function initUserMenu() {
+    const menu = document.createElement('div');
+    menu.id = 'userMenu';
+    menu.style.cssText = `
+        position: fixed;
+        top: 70px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.95);
+        border: 1px solid #00FFFF;
+        border-radius: 10px;
+        padding: 15px;
+        min-width: 200px;
+        z-index: 1001;
+        display: none;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 5px 30px rgba(0, 255, 255, 0.2);
+    `;
+    
+    document.body.appendChild(menu);
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#userGreeting') && !e.target.closest('#userMenu')) {
+            menu.style.display = 'none';
+        }
+    });
+}
+
+function showUserMenu() {
+    const menu = document.getElementById('userMenu');
+    const userName = localStorage.getItem(OMNIVERSE_CONFIG.storage.userName);
+    const isAdmin = userName && OMNIVERSE_CONFIG.admin.names.includes(userName.toLowerCase());
+    
+    menu.innerHTML = `
+        <div style="margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;">
+            <strong>User Menu</strong>
+        </div>
+        
+        <button onclick="changeUserName()" style="
+            width: 100%;
+            background: rgba(0, 136, 255, 0.2);
+            border: 1px solid #0088FF;
+            color: #00FFFF;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            text-align: left;
+        ">
+            ✏️ Change Name
+        </button>
+        
+        <button onclick="showUserStats()" style="
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #666;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            text-align: left;
+        ">
+            📊 View Stats
+        </button>
+        
+        ${isAdmin ? `
+        <button onclick="showAdminPanel()" style="
+            width: 100%;
+            background: rgba(255, 215, 0, 0.2);
+            border: 1px solid #FFD700;
+            color: #FFD700;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            text-align: left;
+        ">
+            👑 Admin Panel
+        </button>` : ''}
+        
+        <button onclick="logoutUser()" style="
+            width: 100%;
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: left;
+            margin-top: 15px;
+        ">
+            🚪 Logout
+        </button>
+    `;
+    
+    menu.style.display = 'block';
+}
+
+// User Actions
+function changeUserName() {
+    document.getElementById('userMenu').style.display = 'none';
+    localStorage.removeItem(OMNIVERSE_CONFIG.storage.userName);
+    initEnhancedAuth();
+}
+
+function showUserStats() {
+    document.getElementById('userMenu').style.display = 'none';
+    
+    const stats = {
+        name: localStorage.getItem(OMNIVERSE_CONFIG.storage.userName),
+        firstVisit: localStorage.getItem(OMNIVERSE_CONFIG.storage.firstVisit),
+        lastVisit: localStorage.getItem(OMNIVERSE_CONFIG.storage.lastVisit),
+        visits: localStorage.getItem(OMNIVERSE_CONFIG.storage.visitCount),
+        level: localStorage.getItem(OMNIVERSE_CONFIG.storage.userLevel)
+    };
+    
+    alert(`
+        👤 User Statistics:
+        
+        Name: ${stats.name}
+        Level: ${stats.level}
+        Total Visits: ${stats.visits}
+        First Visit: ${new Date(stats.firstVisit).toLocaleDateString()}
+        Last Visit: ${new Date(stats.lastVisit).toLocaleDateString()}
+        
+        Keep exploring! 🚀
+    `);
+}
+
+function showAdminPanel() {
+    document.getElementById('userMenu').style.display = 'none';
+    
+    // In a real implementation, this would open an admin dashboard
+    alert(`
+        👑 ADMIN PANEL
+        
+        [System Status]
+        • Users online: ${Math.floor(Math.random() * 100) + 1}
+        • Stories loaded: ${document.querySelectorAll('.card').length}
+        • Security: Active
+        
+        [Quick Actions]
+        1. View all users
+        2. Manage stories
+        3. Security logs
+        4. System settings
+        
+        Use Ctrl+Shift+A for advanced panel.
+    `);
+}
+
+function logoutUser() {
+    if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem(OMNIVERSE_CONFIG.storage.userName);
+        document.getElementById('userMenu').style.display = 'none';
+        showOmniverseNotification('Logged out successfully. Refresh to continue.', 'info');
+        setTimeout(() => location.reload(), 2000);
+    }
+}
+
+// Enhanced Keyboard Shortcuts
+function initEnhancedShortcuts() {
+    document.addEventListener('keydown', function(e) {
+        // Ctrl+Shift+R - Reset everything
+        if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+            e.preventDefault();
+            if (confirm('⚠️ WARNING: This will reset ALL OMNIVERSE data!\nAre you absolutely sure?')) {
+                localStorage.clear();
+                sessionStorage.clear();
+                showOmniverseNotification('All data cleared. Reloading...', 'info');
+                setTimeout(() => location.reload(), 1000);
+            }
+        }
+        
+        // Ctrl+Shift+D - Debug info
+        if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+            e.preventDefault();
+            console.log('[OMNIVERSE DEBUG]', {
+                user: window.currentUser,
+                config: OMNIVERSE_CONFIG,
+                localStorage: { ...localStorage },
+                timestamp: new Date().toISOString()
+            });
+            showOmniverseNotification('Debug info logged to console', 'info');
+        }
+        
+        // Ctrl+Shift+M - Toggle menu
+        if (e.ctrlKey && e.shiftKey && e.key === 'M') {
+            e.preventDefault();
+            const menu = document.getElementById('userMenu');
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        // Escape - Close menu
+        if (e.key === 'Escape') {
+            const menu = document.getElementById('userMenu');
+            if (menu) menu.style.display = 'none';
+        }
+    });
+}
+
+// Main initialization
+function initOmniverseAuth() {
+    // Add CSS for animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideDown {
+            from { transform: translateX(-50%) translateY(-30px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+        
+        .admin-badge {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 215, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Initialize systems
+    initEnhancedAuth();
+    initEnhancedShortcuts();
+    
+    // Export to global scope
+    window.OMNIVERSE = {
+        ...window.OMNIVERSE,
+        config: OMNIVERSE_CONFIG,
+        user: window.currentUser,
+        auth: {
+            login: initEnhancedAuth,
+            logout: logoutUser,
+            changeName: changeUserName
+        },
+        utils: {
+            showNotification: showOmniverseNotification,
+            showStats: showUserStats
+        }
+    };
+    
+    console.log('🚀 OMNIVERSE v2.0 Authentication initialized');
+}
+
+// ==================== INTEGRATION WITH EXISTING CODE ====================
+
+// Replace the existing init() function with an integrated version
+function init() {
+    // Initialize OMNIVERSE authentication system first
+    initOmniverseAuth();
+    
+    // Then initialize the existing story system
+    updateUserStats();
+    setupEventListeners();
+    applySavedSettings();
+    updateBookmarksSection();
+    checkOnlineStatus();
+    updateStorageInfo();
+    setupAuthentication();
+    initializeSearch();
+    
+    // Listen for online/offline status changes
+    window.addEventListener('online', () => {
+        updateOnlineStatus(true);
+        syncOfflineStories();
+    });
+    window.addEventListener('offline', () => {
+        updateOnlineStatus(false);
+    });
+    
+    // Initialize the existing social bar (will be overridden by enhanced version)
+    initSocialBar();
+}
+
+// Update the existing setupAuthentication to work with the new system
+function setupAuthentication() {
+    // Check if user is already signed in via the new system
+    const userName = localStorage.getItem(OMNIVERSE_CONFIG.storage.userName);
+    
+    if (userName) {
+        // Use the new system's user data
+        currentUser = {
+            id: userName,
+            name: userName,
+            isAdmin: OMNIVERSE_CONFIG.admin.names.includes(userName.toLowerCase())
+        };
+        updateUserUI(currentUser);
+        loadUserData(userName);
+    } else {
+        updateUserUI(null);
+    }
+}
+
+// Update the existing showNotification to not conflict with the new system
+function showNotification(message, type = 'success') {
+    // If there's already an OMNIVERSE notification system, use a different style
+    const existingNotification = document.querySelector('.notification:not(.omniverse)');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="uil uil-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 300);
+    }, 3000);
+}
+
+// Update the existing social bar initialization
+function initSocialBar() {
+    // This will be overridden by initEnhancedSocialBar
+    // We'll keep it as a fallback
+}
+
+// Start everything when page loads
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
 </script>
