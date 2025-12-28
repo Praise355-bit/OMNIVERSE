@@ -2477,7 +2477,8 @@ const OMNIVERSE_CONFIG = {
         userLevel: 'omniverse_userLevel'
     },
     admin: {
-        names: ['praise', 'fawaz', 'marvelous', 'henry', 'system'],
+        names: ['praise', 'fawaz', 'marvelous',]
+        expert: 'fawaz','marvelous'
         master: 'praise', // Master admin
         privileges: {
             bypassCooldown: true,
@@ -2487,7 +2488,7 @@ const OMNIVERSE_CONFIG = {
         }
     },
     security: {
-        bannedRegex: /(kesther|robot|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$|assistant|deepseek|huggingface|openai)/i,
+        bannedRegex: /(kesther|ai|robot|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$|assistant|deepseek|huggingface|openai)/i,
         minLength: 2,
         maxLength: 25,
         maxAttempts: 5,
@@ -4204,5 +4205,6 @@ if (document.readyState === 'loading') {
     console.log('⚙️ Floating Settings Button Active — Only Entry Point');
 })();
 </script>
+
 
 
