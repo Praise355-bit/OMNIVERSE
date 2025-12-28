@@ -2468,6 +2468,7 @@ function setupAuthentication() {
 // ==================== INTEGRATED OMNIVERSE AUTHENTICATION SYSTEM ====================
 
 // Configuration object for better maintainability
+// Your config (exactly as you have it)
 const OMNIVERSE_CONFIG = {
     storage: {
         userName: 'omniverse_userName_v2',
@@ -2477,9 +2478,9 @@ const OMNIVERSE_CONFIG = {
         userLevel: 'omniverse_userLevel'
     },
     admin: {
-        names: ['praise', 'fawaz', 'marvelous',]
-        expert: 'fawaz','marvelous'
-        master: 'praise', // Master admin
+        names: ['praise', 'fawaz', 'marvelous', 'henry', 'system'],
+        master: 'praise',
+        experts: ['fawaz', 'marvelous'],
         privileges: {
             bypassCooldown: true,
             accessDebug: true,
@@ -2488,11 +2489,11 @@ const OMNIVERSE_CONFIG = {
         }
     },
     security: {
-        bannedRegex: /(kesther|ai|robot|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$|assistant|deepseek|huggingface|openai)/i,
+        bannedRegex: /(kesther|robot|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$|assistant|deepseek|huggingface|openai)/i,
         minLength: 2,
         maxLength: 25,
         maxAttempts: 5,
-        cooldownTime: 30000 // 30 seconds
+        cooldownTime: 30000
     },
     ui: {
         theme: 'dark',
@@ -2500,6 +2501,12 @@ const OMNIVERSE_CONFIG = {
         sounds: false
     }
 };
+
+// Test it
+console.log('Experts:', OMNIVERSE_CONFIG.admin.experts);
+console.log('Is fawaz expert?', OMNIVERSE_CONFIG.admin.experts.includes('fawaz'));
+console.log('Is marvelous expert?', OMNIVERSE_CONFIG.admin.experts.includes('marvelous'));
+console.log('Is praise admin?', OMNIVERSE_CONFIG.admin.experts.includes('praise'));
 
 // Enhanced User Class for better user management
 class UserManager {
@@ -4205,6 +4212,3 @@ if (document.readyState === 'loading') {
     console.log('⚙️ Floating Settings Button Active — Only Entry Point');
 })();
 </script>
-
-
-
