@@ -6,1856 +6,36 @@
     <title>OMNIVERSE - Discover Amazing Stories</title>
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.2.0/css/line.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M32 8 A 24 24 0 1 0 32 56' fill='none' stroke='%2300BFFF' stroke-width='8' stroke-linecap='round'/%3E%3Cpath d='M38 18 A 14 14 0 0 1 38 46' fill='none' stroke='%2300FFFF' stroke-width='5' stroke-linecap='round' opacity='0.8'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%2300BFFF'/%3E%3C/svg%3E">
 </head>
 <body>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-:root {
-    --primary-color: #00BFFF; /* Neon blue */
-    --primary-dark: #0080FF; /* Darker neon blue */
-    --secondary-color: #00FFFF; /* Cyan blue */
-    --accent-color: #FF6B8B; /* Changed to pink for better contrast */
-    --text-color: #FFFFFF; /* White text for contrast */
-    --light-text: #E0E0E0; /* Lighter gray for secondary text */
-    --bg-color: #0A0A1A; /* Dark blue-black background for better contrast */
-    --card-bg: #1A1A2E; /* Darker cards with blue tint */
-    --shadow: 0 8px 30px rgba(0, 191, 255, 0.3); /* Neon blue shadow */
-    --transition: all 0.3s ease;
-    --nav-bg: rgba(10, 10, 26, 0.95); /* Semi-transparent dark background */
-    --hero-bg: linear-gradient(135deg, #0A0A1A 0%, #1A1A2E 100%); /* Dark gradient */
-    --footer-bg: #0A0A1A; /* Dark background */
-    --btn-hover: #FF4757; /* Brighter red for hover */
-    --gradient-1: linear-gradient(135deg, #00BFFF 0%, #8A2BE2 100%); /* Neon blue to purple */
-    --gradient-2: linear-gradient(135deg, #FF6B8B 0%, #FFA500 100%); /* Pink to orange */
-    --gradient-3: linear-gradient(135deg, #00FFAA 0%, #00FFFF 100%); /* Mint to cyan */
-    --border-radius: 16px;
-    --section-padding: clamp(3rem, 5vw, 5rem) 0;
-}
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-html {
-    scroll-behavior: smooth;
-    font-size: 100%;
-}
-body {
-    min-height: 100vh;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    line-height: 1.6;
-    overflow-x: hidden;
-    font-family: 'Poppins', sans-serif;
-    text-transform: capitalize;
-}
-
-.nav-logo svg {
-    transform: scale(3.5);
-    transform-origin: left center;
-}
-/* Sticker edges */
-.sticker {
-    position: fixed;
-    z-index: 9999;
-    font-size: 3rem;
-    opacity: 0.8;
-    color: var(--secondary-color);
-}
-.sticker-top-left {
-    top: 10px;
-    left: 10px;
-}
-.sticker-top-right {
-    top: 10px;
-    right: 10px;
-}
-.sticker-bottom-left {
-    bottom: 10px;
-    left: 10px;
-}
-.sticker-bottom-right {
-    bottom: 10px;
-    right: 10px;
-}
-/* Improved Navigation */
-nav {
-    background-color: var(--nav-bg);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    padding: 0 clamp(1rem, 3vw, 2rem);
-    transition: var(--transition);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(0, 191, 255, 0.2);
-}
-nav.scrolled {
-    padding: 0.5rem clamp(1rem, 3vw, 2rem);
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
-}
-.nav-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 0;
-}
-.nav-logo {
-    font-size: clamp(1.4rem, 3vw, 1.8rem);
-    font-weight: 700;
-    color: var(--secondary-color);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-.nav-links {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    list-style: none;
-}
-.nav-link {
-    color: var(--text-color);
-    text-decoration: none;
-    font-weight: 500;
-    padding: 0.5rem 1rem;
-    border-radius: 30px;
-    transition: var(--transition);
-    position: relative;
-}
-.nav-link:hover {
-    color: var(--secondary-color);
-    background: rgba(0, 191, 255, 0.1);
-}
-.nav-link.active {
-    color: var(--secondary-color);
-    background: rgba(0, 191, 255, 0.15);
-    box-shadow: 0 0 15px rgba(0, 191, 255, 0.3);
-}
-.mobile-toggle {
-    display: none;
-    background: none;
-    border: none;
-    color: var(--secondary-color);
-    font-size: 1.5rem;
-    cursor: pointer;
-}
-/* Enhanced Search Bar */
-.search-container {
-    display: flex;
-    align-items: center;
-    position: relative;
-    margin-right: 1rem;
-}
-.search-input {
-    padding: 0.75rem 1.25rem;
-    border: 2px solid rgba(0, 191, 255, 0.4);
-    border-radius: 30px;
-    outline: none;
-    width: 280px;
-    transition: var(--transition);
-    font-size: 0.95rem;
-    background: rgba(26, 26, 46, 0.8);
-    color: var(--text-color);
-    backdrop-filter: blur(10px);
-}
-.search-input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
-}
-.search-input:focus {
-    border-color: var(--secondary-color);
-    box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.2);
-    width: 320px;
-    background: rgba(26, 26, 46, 0.9);
-}
-.search-btn {
-    background: transparent;
-    color: var(--secondary-color);
-    font-size: large;
-    border: none;
-    border-radius: 50%;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    margin-left: 0.5rem;
-    transition: var(--transition);
-    box-shadow: 0 4px 10px rgba(0, 191, 255, 0.3);
-}
-.search-btn:hover {
-    background: rgba(0, 191, 255, 0.1);
-    transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(0, 191, 255, 0.4);
-}
-/* Improved search results positioning and visibility */
-.search-results {
-    position: absolute;
-    top: calc(100% + 10px);
-    left: 0;
-    min-width: 400px;
-    background: var(--card-bg);
-    border: 1px solid rgba(0, 191, 255, 0.3);
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 191, 255, 0.2);
-    z-index: 1001;
-    max-height: 400px;
-    overflow-y: auto;
-    display: none;
-}
-.search-results::-webkit-scrollbar {
-    width: 8px;
-}
-.search-results::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
-}
-.search-results::-webkit-scrollbar-thumb {
-    background: var(--secondary-color);
-    border-radius: 10px;
-}
-.search-result-item {
-    padding: 15px 20px;
-    border-bottom: 1px solid rgba(0, 191, 255, 0.2);
-    cursor: pointer;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-}
-.search-result-item:hover {
-    background: rgba(0, 191, 255, 0.1);
-    transform: translateX(5px);
-}
-.search-result-item:last-child {
-    border-bottom: none;
-}
-.search-result-title {
-    font-weight: 600;
-    color: var(--secondary-color);
-    margin-bottom: 5px;
-}
-.search-result-category {
-    font-size: 0.8rem;
-    color: var(--light-text);
-    background: var(--bg-color);
-    padding: 3px 10px;
-    border-radius: 20px;
-    display: inline-block;
-}
-/* Settings Button in Navigation */
-.settings-btn-container {
-    margin-left: 0.5rem;
-}
-
-.settings-btn {
-    background: transparent;
-    border: none;
-    color: var(--secondary-color);
-    font-size: 1.6rem;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 50%;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.settings-btn:hover {
-    background: rgba(0, 191, 255, 0.15);
-    transform: scale(1.1);
-    box-shadow: 0 0 15px rgba(0, 191, 255, 0.3);
-}
-
-@media (max-width: 768px) {
-    .settings-btn {
-        font-size: 1.8rem;
-    }
-}
-.no-results {
-    padding: 20px;
-    text-align: center;
-    color: var(--light-text);
-}
-/* Enhanced Hero Section */
-.hero {
-    text-align: center;
-    padding: clamp(6rem, 15vw, 10rem) 1rem clamp(4rem, 10vw, 6rem);
-    background: var(--hero-bg);
-    color: var(--text-color);
-    margin-bottom: 2rem;
-    position: relative;
-    overflow: hidden;
-}
-.hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="M0,0 L1000,100 L0,100 Z" fill="rgba(0,191,255,0.1)"></path></svg>');
-    background-size: cover;
-    background-position: center;
-}
-.hero-content {
-    max-width: 900px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 2;
-}
-.hero h1 {
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    margin-bottom: 1rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    position: relative;
-    font-weight: 800;
-    letter-spacing: 1px;
-    line-height: 1.2;
-    color: var(--secondary-color);
-}
-.hero h2 {
-    font-size: clamp(1.5rem, 3vw, 2.2rem);
-    margin-bottom: 1.5rem;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-    position: relative;
-    font-weight: 600;
-}
-.hero p {
-    font-size: clamp(1rem, 2vw, 1.3rem);
-    max-width: 700px;
-    margin: 0 auto 2rem;
-    position: relative;
-    opacity: 0.9;
-    line-height: 1.7;
-}
-.hero-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 2rem;
-    flex-wrap: wrap;
-}
-.hero-btn {
-    padding: 0.875rem 1.875rem;
-    background: transparent;
-    color: var(--text-color);
-    text-decoration: none;
-    border-radius: 30px;
-    transition: var(--transition);
-    border: 2px solid var(--secondary-color);
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1rem;
-}
-.hero-btn.primary {
-    background: var(--secondary-color);
-    color: var(--bg-color);
-    border-color: var(--secondary-color);
-    box-shadow: 0 5px 15px rgba(0, 191, 255, 0.3);
-}
-.hero-btn:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-}
-.hero-btn.primary:hover {
-    background: var(--primary-color);
-    border-color: var(--primary-color);
-    color: var(--text-color);
-}
-.hero-btn.secondary:hover {
-    background: rgba(0, 191, 255, 0.1);
-    border-color: var(--secondary-color);
-}
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 clamp(1rem, 3vw, 2rem);
-}
-/* Enhanced Sections */
-section {
-    padding: var(--section-padding);
-    margin-bottom: 2rem;
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    position: relative;
-    overflow: hidden;
-    border: 1px solid rgba(0, 191, 255, 0.1);
-}
-.section-header {
-    text-align: center;
-    margin-bottom: clamp(2rem, 5vw, 3rem);
-}
-section h2 {
-    margin-bottom: 1rem;
-    color: var(--secondary-color);
-    font-size: clamp(1.8rem, 4vw, 2.5rem);
-    position: relative;
-    display: inline-block;
-    font-weight: 700;
-}
-section h2::after {
-    content: '';
-    position: absolute;
-    bottom: -15px;
-    left: 25%;
-    width: 50%;
-    height: 4px;
-    background: var(--secondary-color);
-    border-radius: 2px;
-}
-.section-subtitle {
-    color: var(--light-text);
-    font-size: clamp(1rem, 2vw, 1.2rem);
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.7;
-}
-/* Enhanced Card Container */
-.card-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: clamp(1.5rem, 3vw, 2rem);
-    justify-items: center;
-}
-.card {
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    width: 100%;
-    max-width: 350px;
-    box-shadow: var(--shadow);
-    transition: var(--transition);
-    border: 1px solid rgba(0, 191, 255, 0.2);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-.card:hover {
-    transform: translateY(-15px);
-    box-shadow: 0 20px 40px rgba(0, 191, 255, 0.2);
-    border-color: rgba(0, 191, 255, 0.4);
-}
-.card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 5px;
-    background: var(--gradient-1);
-}
-.card-badge {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: var(--accent-color);
-    color: var(--text-color);
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    z-index: 2;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-.card-img {
-    height: 220px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-color);
-    font-size: 1.6rem;
-    font-weight: 700;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-    position: relative;
-    overflow: hidden;
-}
-.card-img::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.2);
-}
-.card-content {
-    padding: 1.5rem;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-.card h3 {
-    margin-bottom: 0.75rem;
-    color: var(--secondary-color);
-    font-size: 1.4rem;
-    font-weight: 700;
-    line-height: 1.3;
-}
-.card p {
-    color: var(--light-text);
-    margin-bottom: 1.25rem;
-    font-size: 1rem;
-    line-height: 1.6;
-    flex-grow: 1;
-}
-.card-meta {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1.25rem;
-    font-size: 0.9rem;
-    color: var(--light-text);
-}
-.card-category {
-    background: var(--bg-color);
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-weight: 500;
-    border: 1px solid rgba(0, 191, 255, 0.2);
-}
-.card-length {
-    font-weight: 500;
-}
-.btn {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    background: var(--secondary-color);
-    color: var(--bg-color);
-    text-decoration: none;
-    border-radius: 8px;
-    transition: var(--transition);
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 191, 255, 0.3);
-    align-self: flex-start;
-}
-.btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.5s;
-}
-.btn:hover::before {
-    left: 100%;
-}
-.btn:hover {
-    background: var(--primary-color);
-    color: var(--text-color);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 191, 255, 0.4);
-}
-.tech-card .card-img {
-    background: var(--gradient-1);
-}
-/* Enhanced Story Reader */
-.story-reader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(10, 10, 26, 0.98);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-.story-reader.active {
-    opacity: 1;
-}
-.story-content {
-    background: var(--card-bg);
-    padding: clamp(1.5rem, 3vw, 2.5rem);
-    border-radius: 0;
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    position: relative;
-    transform: translateY(20px);
-    transition: transform 0.3s ease;
-}
-.story-reader.active .story-content {
-    transform: translateY(0);
-}
-.close-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: var(--accent-color);
-    color: var(--text-color);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    font-weight: bold;
-    transition: var(--transition);
-    z-index: 10;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-.close-btn:hover {
-    background: #FF4757;
-    transform: rotate(90deg) scale(1.1);
-}
-.story-content h2 {
-    color: var(--secondary-color);
-    margin-bottom: 1.25rem;
-    text-align: center;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid rgba(0, 191, 255, 0.3);
-    font-size: clamp(1.8rem, 4vw, 2.2rem);
-}
-.story-text {
-    line-height: 1.8;
-    color: var(--light-text);
-    max-width: 800px;
-    margin: 0 auto;
-    font-size: 1.1rem;
-}
-.story-text p {
-    margin-bottom: 1.5rem;
-    text-align: justify;
-}
-.story-text h3 {
-    margin: 1.875rem 0 0.9375rem;
-    color: var(--secondary-color);
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(0, 191, 255, 0.3);
-    font-size: 1.5rem;
-}
-.story-nav {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 1.875rem;
-    padding-top: 1.25rem;
-    border-top: 2px solid rgba(0, 191, 255, 0.3);
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-    gap: 1rem;
-}
-.story-nav-btn {
-    padding: 0.75rem 1.5rem;
-    background: var(--secondary-color);
-    color: var(--bg-color);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: var(--transition);
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    box-shadow: 0 4px 10px rgba(0, 191, 255, 0.3);
-}
-.story-nav-btn:hover {
-    background: var(--primary-color);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 191, 255, 0.4);
-}
-.story-nav-btn:disabled {
-    background: #666;
-    color: #999;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
-.auth-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(10, 10, 26, 0.98);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-.auth-modal.active {
-    opacity: 1;
-}
-.auth-content {
-    background: var(--card-bg);
-    padding: clamp(1.5rem, 3vw, 2.5rem);
-    border-radius: 0;
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    position: relative;
-    transform: translateY(20px);
-    transition: transform 0.3s ease;
-}
-.auth-modal.active .auth-content {
-    transform: translateY(0);
-}
-.auth-close-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: var(--accent-color);
-    color: var(--text-color);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    font-weight: bold;
-    transition: var(--transition);
-    z-index: 10;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-.auth-close-btn:hover {
-    background: #FF4757;
-    transform: rotate(90deg) scale(1.1);
-}
-.auth-content h2 {
-    text-align: center;
-    margin-bottom: 1.875rem;
-    color: var(--secondary-color);
-    font-size: clamp(1.8rem, 4vw, 2.2rem);
-}
-.scroll-to-top {
-    position: fixed;
-    bottom: 1.875rem;
-    right: 1.875rem;
-    width: 60px;
-    height: 60px;
-    background: var(--secondary-color);
-    color: var(--bg-color);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    opacity: 0;
-    visibility: hidden;
-    transition: var(--transition);
-    z-index: 999;
-    box-shadow: 0 5px 15px rgba(0, 191, 255, 0.4);
-    font-size: 1.5rem;
-}
-.scroll-to-top.active {
-    opacity: 1;
-    visibility: visible;
-}
-.scroll-to-top:hover {
-    background: var(--primary-color);
-    color: var(--text-color);
-    transform: translateY(-5px) scale(1.1);
-    box-shadow: 0 8px 20px rgba(0, 191, 255, 0.5);
-}
-.loading {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(255,255,255,.3);
-    border-radius: 50%;
-    border-top-color: var(--secondary-color);
-    animation: spin 1s ease-in-out infinite;
-    margin-right: 0.625rem;
-}
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-.story-meta {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1.25rem;
-    color: var(--light-text);
-    font-size: 0.9rem;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-.story-category {
-    display: inline-block;
-    padding: 5px 15px;
-    background: var(--bg-color);
-    border-radius: 20px;
-    font-size: 0.9rem;
-    margin-right: 0.625rem;
-    font-weight: 500;
-    border: 1px solid rgba(0, 191, 255, 0.2);
-}
-.category-filters {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 0.625rem;
-    margin-bottom: clamp(2rem, 4vw, 2.5rem);
-}
-.category-filter {
-    padding: 0.625rem 1.5rem;
-    background: var(--bg-color);
-    border: 2px solid rgba(0, 191, 255, 0.3);
-    border-radius: 30px;
-    cursor: pointer;
-    transition: var(--transition);
-    font-weight: 500;
-    color: var(--light-text);
-}
-.category-filter.active,
-.category-filter:hover {
-    background: var(--secondary-color);
-    color: var(--bg-color);
-    border-color: var(--secondary-color);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 191, 255, 0.3);
-}
-/* Reading Progress */
-.reading-progress {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: transparent;
-    z-index: 1001;
-    display: none;
-}
-.reading-progress-bar {
-    height: 100%;
-    background: var(--secondary-color);
-    width: 0%;
-    transition: width 0.1s ease;
-}
-.story-controls {
-    position: sticky;
-    bottom: 0;
-    background: var(--card-bg);
-    padding: 1.25rem 0;
-    border-top: 1px solid rgba(0, 191, 255, 0.3);
-    display: flex;
-    justify-content: center;
-    gap: 1.25rem;
-    margin-top: 1.875rem;
-    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
-    flex-wrap: wrap;
-}
-.font-size-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.9375rem;
-    background: var(--bg-color);
-    padding: 0.625rem 0.9375rem;
-    border-radius: 30px;
-    border: 1px solid rgba(0, 191, 255, 0.2);
-}
-.font-size-btn {
-    background: var(--secondary-color);
-    color: var(--bg-color);
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: var(--transition);
-    font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0, 191, 255, 0.3);
-}
-.font-size-btn:hover {
-    background: var(--primary-color);
-    color: var(--text-color);
-    transform: scale(1.1);
-}
-.bookmark-btn {
-    background: transparent;
-    border: none;
-    color: var(--secondary-color);
-    font-size: 1.8rem;
-    cursor: pointer;
-    transition: var(--transition);
-    position: absolute;
-    top: 20px;
-    right: 70px;
-}
-.bookmark-btn:hover {
-    transform: scale(1.2);
-    color: var(--accent-color);
-}
-.bookmark-btn.active {
-    color: var(--accent-color);
-}
-.tts-btn {
-    background: transparent;
-    border: none;
-    color: var(--secondary-color);
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: var(--transition);
-    position: absolute;
-    top: 20px;
-    right: 120px;
-}
-.tts-btn:hover {
-    transform: scale(1.2);
-    color: var(--accent-color);
-}
-.tts-btn.active {
-    color: var(--accent-color);
-}
-/* Premium Section */
-.premium-section {
-    background: var(--gradient-1);
-    color: var(--text-color);
-    text-align: center;
-    padding: clamp(3rem, 6vw, 5rem) 1.25rem;
-    border-radius: var(--border-radius);
-    margin-bottom: 2.5rem;
-    position: relative;
-    overflow: hidden;
-}
-.premium-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="M0,0 L1000,100 L0,100 Z" fill="rgba(255,255,255,0.1)"></path></svg>');
-    background-size: cover;
-    background-position: center;
-}
-.premium-section h2 {
-    color: var(--text-color);
-    font-size: clamp(2rem, 4vw, 2.8rem);
-    margin-bottom: 1.25rem;
-    position: relative;
-}
-.premium-section h2::after {
-    background: var(--text-color);
-}
-.premium-section p {
-    font-size: clamp(1rem, 2vw, 1.3rem);
-    max-width: 700px;
-    margin: 0 auto 1.875rem;
-    opacity: 0.9;
-    position: relative;
-}
-.premium-btn {
-    background: var(--text-color);
-    color: var(--secondary-color);
-    padding: 0.875rem 2.1875rem;
-    border-radius: 30px;
-    text-decoration: none;
-    font-weight: 700;
-    transition: var(--transition);
-    display: inline-block;
-    position: relative;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-.premium-btn:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-    background: var(--accent-color);
-    color: var(--text-color);
-}
-/* App-like Features */
-.user-profile {
-    display: flex;
-    align-items: center;
-    gap: 0.625rem;
-    margin-left: 1.25rem;
-}
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--secondary-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--bg-color);
-    font-weight: bold;
-    cursor: pointer;
-    transition: var(--transition);
-    overflow: hidden;
-}
-.user-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.user-avatar:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 15px rgba(0, 191, 255, 0.5);
-}
-.reading-stats {
-    display: flex;
-    justify-content: space-around;
-    margin: 1.875rem 0;
-    padding: 1.25rem;
-    background: var(--card-bg);
-    border-radius: 15px;
-    box-shadow: var(--shadow);
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-.stat-item {
-    text-align: center;
-    flex: 1;
-    min-width: 120px;
-}
-.stat-value {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--secondary-color);
-}
-.stat-label {
-    color: var(--light-text);
-    font-size: 0.9rem;
-}
-.continue-reading {
-    background: var(--card-bg);
-    border-radius: 15px;
-    padding: 1.5rem;
-    margin: 1.875rem 0;
-    box-shadow: var(--shadow);
-}
-.continue-reading h3 {
-    margin-bottom: 0.9375rem;
-    color: var(--secondary-color);
-}
-.continue-item {
-    display: flex;
-    align-items: center;
-    gap: 0.9375rem;
-    padding: 0.9375rem;
-    border-bottom: 1px solid rgba(0, 191, 255, 0.2);
-    transition: var(--transition);
-}
-.continue-item:hover {
-    background: var(--bg-color);
-}
-.continue-item:last-child {
-    border-bottom: none;
-}
-.continue-cover {
-    width: 60px;
-    height: 80px;
-    border-radius: 8px;
-    background: var(--gradient-1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-color);
-    font-weight: bold;
-    font-size: 0.9rem;
-}
-.continue-info {
-    flex: 1;
-}
-.continue-title {
-    font-weight: 600;
-    margin-bottom: 0.3125rem;
-    color: var(--secondary-color);
-}
-.continue-progress {
-    height: 5px;
-    background: var(--bg-color);
-    border-radius: 3px;
-    overflow: hidden;
-    margin-top: 0.5rem;
-}
-.progress-bar {
-    height: 100%;
-    background: var(--secondary-color);
-    width: 0%;
-    transition: width 0.5s ease;
-}
-.app-features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: clamp(1.5rem, 3vw, 1.875rem);
-    margin-top: 2.5rem;
-}
-.feature-card {
-    background: var(--card-bg);
-    border-radius: 15px;
-    padding: clamp(1.5rem, 3vw, 1.875rem);
-    box-shadow: var(--shadow);
-    transition: var(--transition);
-    text-align: center;
-    border: 1px solid rgba(0, 191, 255, 0.2);
-}
-.feature-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 191, 255, 0.2);
-    border-color: rgba(0, 191, 255, 0.4);
-}
-.feature-icon {
-    font-size: 3rem;
-    color: var(--secondary-color);
-    margin-bottom: 1.25rem;
-}
-.feature-title {
-    font-size: 1.4rem;
-    margin-bottom: 0.9375rem;
-    color: var(--secondary-color);
-}
-.feature-desc {
-    color: var(--light-text);
-    line-height: 1.6;
-}
-/* New Bookmark Section Styles */
-.bookmarks-section {
-    margin-top: 2rem;
-}
-.offline-indicator {
-    display: inline-block;
-    background: var(--accent-color);
-    color: var(--text-color);
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    margin-left: 10px;
-    vertical-align: middle;
-}
-.empty-bookmarks {
-    text-align: center;
-    padding: 3rem;
-    color: var(--light-text);
-}
-.empty-bookmarks i {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    color: var(--secondary-color);
-}
-.sync-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    color: var(--light-text);
-    margin-left: 1rem;
-}
-.sync-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--secondary-color);
-    animation: pulse 2s infinite;
-}
-.sync-indicator.offline {
-    background: var(--accent-color);
-    animation: none;
-}
-@keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.5; }
-    100% { opacity: 1; }
-}
-.storage-info {
-    text-align: center;
-    margin-top: 1rem;
-    font-size: 0.9rem;
-    color: var(--light-text);
-}
-.storage-bar {
-    width: 100%;
-    height: 6px;
-    background: var(--bg-color);
-    border-radius: 3px;
-    margin: 0.5rem 0;
-    overflow: hidden;
-}
-.storage-used {
-    height: 100%;
-    background: var(--secondary-color);
-    border-radius: 3px;
-    transition: width 0.5s ease;
-}
-/* Achievement System */
-.achievements-section {
-    margin-top: 3rem;
-}
-.achievement-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-top: 2rem;
-}
-.achievement-card {
-    background: var(--card-bg);
-    border-radius: 15px;
-    padding: 1.5rem;
-    box-shadow: var(--shadow);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    transition: var(--transition);
-    border: 1px solid rgba(0, 191, 255, 0.2);
-}
-.achievement-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 191, 255, 0.2);
-    border-color: rgba(0, 191, 255, 0.4);
-}
-.achievement-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: var(--gradient-1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-color);
-    font-size: 1.5rem;
-    flex-shrink: 0;
-}
-.achievement-info {
-    flex: 1;
-}
-.achievement-title {
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-    color: var(--secondary-color);
-}
-.achievement-desc {
-    font-size: 0.9rem;
-    color: var(--light-text);
-    margin-bottom: 0.5rem;
-}
-.achievement-progress {
-    height: 6px;
-    background: var(--bg-color);
-    border-radius: 3px;
-    overflow: hidden;
-}
-.achievement-progress-bar {
-    height: 100%;
-    background: var(--secondary-color);
-    width: 0%;
-    transition: width 0.5s ease;
-}
-.achievement-status {
-    font-size: 0.8rem;
-    color: var(--light-text);
-    font-weight: 500;
-}
-/* Reading Challenges */
-.challenges-section {
-    margin-top: 3rem;
-}
-.challenge-card {
-    background: var(--card-bg);
-    border-radius: 15px;
-    padding: 1.5rem;
-    box-shadow: var(--shadow);
-    margin-bottom: 1.5rem;
-    transition: var(--transition);
-    border: 1px solid rgba(0, 191, 255, 0.2);
-}
-.challenge-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 191, 255, 0.2);
-    border-color: rgba(0, 191, 255, 0.4);
-}
-.challenge-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-.challenge-title {
-    font-weight: 600;
-    color: var(--secondary-color);
-}
-.challenge-reward {
-    background: var(--accent-color);
-    color: var(--text-color);
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-.challenge-progress {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-.challenge-stats {
-    display: flex;
-    gap: 1rem;
-    font-size: 0.9rem;
-    color: var(--light-text);
-}
-/* NEW STORY ELEMENTS */
-.story-interactive {
-    margin: 2rem 0;
-}
-.character-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-    margin: 1.5rem 0;
-}
-.character-card {
-    background: var(--bg-color);
-    border-radius: 10px;
-    padding: 1rem;
-    text-align: center;
-    transition: var(--transition);
-    border: 1px solid rgba(0, 191, 255, 0.2);
-}
-.character-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 191, 255, 0.2);
-    border-color: rgba(0, 191, 255, 0.4);
-}
-.character-avatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: var(--gradient-1);
-    margin: 0 auto 0.75rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-color);
-    font-weight: bold;
-    font-size: 1.5rem;
-}
-.character-name {
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-    color: var(--secondary-color);
-}
-.character-role {
-    font-size: 0.8rem;
-    color: var(--light-text);
-}
-.character-description {
-    font-size: 0.75rem;
-    color: var(--light-text);
-    margin-top: 0.5rem;
-    text-align: center;
-}
-/* Notification Styles */
-.notification {
-    position: fixed;
-    top: 100px;
-    right: 20px;
-    background: var(--secondary-color);
-    color: var(--bg-color);
-    padding: 15px 20px;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    z-index: 10000;
-    transform: translateX(400px);
-    transition: transform 0.3s ease;
-    max-width: 300px;
-}
-.notification.error {
-    background: var(--accent-color);
-    color: var(--text-color);
-}
-.notification-content {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-/* Auth Benefits */
-.auth-benefits {
-    margin-top: 2rem;
-    text-align: left;
-    max-width: 400px;
-}
-.auth-benefits h3 {
-    color: var(--secondary-color);
-    margin-bottom: 1rem;
-    text-align: center;
-}
-.auth-benefits ul {
-    list-style: none;
-    padding: 0;
-}
-.auth-benefits li {
-    padding: 0.5rem 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--light-text);
-}
-/* Knowledge Base Styles */
-.knowledge-base {
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    padding: 2rem;
-    margin-bottom: 2rem;
-    border: 1px solid rgba(0, 191, 255, 0.2);
-}
-.kb-tabs {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-.kb-tab {
-    padding: 0.75rem 1.5rem;
-    background: var(--bg-color);
-    border: 2px solid rgba(0, 191, 255, 0.3);
-    border-radius: 30px;
-    cursor: pointer;
-    transition: var(--transition);
-    font-weight: 500;
-    color: var(--light-text);
-}
-.kb-tab.active,
-.kb-tab:hover {
-    background: var(--secondary-color);
-    color: var(--bg-color);
-    border-color: var(--secondary-color);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 191, 255, 0.3);
-}
-.kb-content {
-    display: none;
-}
-.kb-content.active {
-    display: block;
-}
-.kb-section {
-    margin-bottom: 2rem;
-}
-.kb-section h3 {
-    color: var(--secondary-color);
-    margin-bottom: 1rem;
-    font-size: 1.5rem;
-}
-.kb-section p {
-    margin-bottom: 1rem;
-    line-height: 1.6;
-    color: var(--light-text);
-}
-.kb-section ul {
-    margin-left: 1.5rem;
-    margin-bottom: 1rem;
-}
-.kb-section li {
-    margin-bottom: 0.5rem;
-    color: var(--light-text);
-}
-.kb-highlight {
-    background: rgba(0, 191, 255, 0.1);
-    border-left: 4px solid var(--secondary-color);
-    padding: 1rem;
-    margin: 1rem 0;
-    border-radius: 0 8px 8px 0;
-    color: var(--light-text);
-}
-/* Improved Responsive Design */
-@media (max-width: 1024px) {
-    .search-input {
-        width: 220px;
-    }
- 
-    .search-input:focus {
-        width: 250px;
-    }
-}
-@media (max-width: 768px) {
-    .nav-container {
-        flex-wrap: wrap;
-    }
- 
-    .nav-links {
-        display: none;
-        width: 100%;
-        flex-direction: column;
-        gap: 0;
-        margin-top: 1rem;
-        background: var(--card-bg);
-        border-radius: 0 0 15px 15px;
-        padding: 1rem;
-    }
- 
-    .nav-links.active {
-        display: flex;
-    }
- 
-    .nav-link {
-        width: 100%;
-        text-align: center;
-        padding: 1rem;
-        border-radius: 8px;
-    }
- 
-    .mobile-toggle {
-        display: block;
-    }
- 
-    .search-container {
-        margin: 1rem 0;
-        width: 100%;
-        justify-content: center;
-    }
- 
-    .hero {
-        padding: 7rem 1rem 5rem;
-    }
- 
-    .story-controls {
-        flex-direction: column;
-        align-items: center;
-    }
- 
-    .font-size-controls {
-        order: 2;
-    }
- 
-    .story-nav {
-        order: 1;
-        flex-direction: column;
-        width: 100%;
-    }
- 
-    .story-nav-btn {
-        width: 100%;
-        justify-content: center;
-    }
- 
-    .user-menu {
-        position: fixed;
-        top: auto;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        border-radius: 15px 15px 0 0;
-        width: 100%;
-    }
-}
-@media (max-width: 480px) {
-    .hero h1 {
-        font-size: 2.2rem;
-    }
- 
-    .hero h2 {
-        font-size: 1.5rem;
-    }
- 
-    .hero p {
-        font-size: 1.1rem;
-    }
- 
-    .hero-buttons {
-        flex-direction: column;
-        align-items: center;
-    }
- 
-    .hero-btn {
-        width: 100%;
-        justify-content: center;
-    }
- 
-    .card-container {
-        grid-template-columns: 1fr;
-    }
- 
-    .search-input {
-        width: 65%;
-    }
- 
-    .search-input:focus {
-        width: 75%;
-    }
- 
-    .scroll-to-top {
-        width: 50px;
-        height: 50px;
-        bottom: 20px;
-        right: 20px;
-    }
-}
-/* Print Styles */
-@media print {
-    nav, .scroll-to-top, .hero-buttons, .category-filters, footer {
-        display: none !important;
-    }
- 
-    .hero, section {
-        padding: 1rem 0;
-        box-shadow: none;
-        margin-bottom: 1rem;
-    }
- 
-    .card {
-        break-inside: avoid;
-        margin-bottom: 1rem;
-    }
-}
-/* Reduced Motion Support */
-@media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-/* High Contrast Mode Support */
-@media (prefers-contrast: high) {
-    :root {
-        --primary-color: #00FFFF;
-        --primary-dark: #00BFFF;
-        --secondary-color: #FFFFFF;
-        --accent-color: #FF6B8B;
-        --text-color: #FFFFFF;
-        --light-text: #E0E0E0;
-        --bg-color: #000000;
-        --card-bg: #0A0A1A;
-        --shadow: 0 0 0 2px #00FFFF;
-    }
-}
-/* Dark Mode Support (already dark, but enforce) */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --text-color: #E0E0E0;
-        --light-text: #A0A0A0;
-        --bg-color: #0A0A1A;
-        --card-bg: #1A1A2E;
-        --shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-    }
-}
-span {
-    color: var(--text-color);
-}
-/* Added for better icon visibility */
-.nav-links i {
-    color: var(--text-color);
-}
-.btn i {
-    color: inherit;
-}
-.feature-card i {
-    color: var(--secondary-color);
-}
-.achievement-card i {
-    color: var(--text-color);
-}
-.bookmark-btn i,
-.tts-btn i {
-    color: inherit;
-}
-.uil-bars {
-    font-size: 1.5rem;
-    background-color: transparent;
-    color: var(--secondary-color);
-}
-.uil-book-open {
-    font-size: 2.5rem;
-    background-color: transparent;
-    color: var(--secondary-color);
-}
-
-/* Footer Styles */
-footer {
-    background: var(--footer-bg);
-    color: var(--text-color);
-    padding: 3rem 1rem;
-    margin-top: 3rem;
-    border-top: 1px solid rgba(0, 191, 255, 0.3);
-}
-
-.footer-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-}
-
-.footer-section h3 {
-    color: var(--secondary-color);
-    margin-bottom: 1rem;
-    font-size: 1.2rem;
-}
-
-.footer-links {
-    list-style: none;
-    padding: 0;
-}
-
-.footer-links li {
-    margin-bottom: 0.5rem;
-}
-
-.footer-links a {
-    color: var(--light-text);
-    text-decoration: none;
-    transition: var(--transition);
-}
-
-.footer-links a:hover {
-    color: var(--secondary-color);
-    padding-left: 5px;
-}
-
-.footer-bottom {
-    text-align: center;
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(0, 191, 255, 0.2);
-    color: var(--light-text);
-    font-size: 0.9rem;
-}
-/* Footer Main Section */
-footer {
-    background: linear-gradient(to bottom, #0a0a14 0%, #11111f 100%);
-    color: #e0e0e0;
-    padding: 4rem 0 6rem;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-}
-
-.footer-main {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 clamp(1.5rem, 5vw, 4rem);
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 3rem;
-    align-items: start;
-}
-
-.footer-brand .footer-logo {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: var(--accent-color, #00c8ff);
-    letter-spacing: -0.5px;
-    margin-bottom: 1rem;
-}
-
-.footer-tagline {
-    font-size: 1rem;
-    line-height: 1.6;
-    opacity: 0.85;
-    max-width: 420px;
-}
-
-.footer-nav h4,
-.footer-social h4 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 1.2rem;
-    color: #ffffff;
-}
-
-.footer-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.footer-nav li {
-    margin-bottom: 0.75rem;
-}
-
-.footer-nav a {
-    color: #b0b0b0;
-    text-decoration: none;
-    font-size: 0.98rem;
-    transition: color 0.3s ease;
-}
-
-.footer-nav a:hover {
-    color: var(--accent-color, #00c8ff);
-}
-
-.social-links {
-    display: flex;
-    gap: 1.2rem;
-}
-
-.social-link {
-    color: #aaaaaa;
-    font-size: 1.45rem;
-    transition: all 0.3s ease;
-    opacity: 0.9;
-}
-
-.social-link:hover {
-    color: var(--accent-color, #00c8ff);
-    transform: translateY(-4px);
-    opacity: 1;
-}
-
-/* Legal Section */
-.footer-legal {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding-top: 2.5rem;
-    border-top: 1px solid rgba(0, 191, 255, 0.15);
-    font-size: 0.9rem;
-    opacity: 0.7;
-}
-
-.powered-by {
-    font-size: 0.85rem;
-    margin-top: 0.5rem;
-    opacity: 0.6;
-}
-
-    </style>
     <nav id="navbar">
-        <div class="nav-container">
-            <a href="#hero" class="nav-logo">
-                <i class="uil uil-book-open"></i>
-                <span>OMNIVERSE</span>
-            </a>
-            <button class="mobile-toggle" id="mobileToggle">
-                <i class="uil uil-bars"></i>
-            </button>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#bookmarks" class="nav-link">Bookmarks</a></li>
-                <li><a href="#premium" class="nav-link">Premium</a></li>
-                <li class="search-container">
-                    <input type="text" class="search-input" placeholder="Search stories...">
-                    <button class="search-btn"> 
-                        <i class="uil uil-search"></i> 
-                    </button>
-                    <div class="search-results" id="searchResults"></div>
-                </li>
-                <li class="sync-status">
-                    <span class="sync-indicator" id="syncIndicator"></span>
-                    <span id="syncStatus">Online</span>
-                </li>
-</li>
-            </ul>
-        </div>
-    </nav>
+    <div class="nav-container">
+        <a href="#hero" class="nav-logo">
+            <i class="uil uil-book-open"></i>
+            <span>OMNIVERSE</span>
+        </a>
+        <button class="mobile-toggle" id="mobileToggle">
+            <i class="uil uil-bars"></i>
+        </button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#bookmarks" class="nav-link">Bookmarks</a></li>
+            <li><a href="#premium" class="nav-link">Premium</a></li>
+            <li class="search-container">
+                <input type="text" class="search-input" placeholder="Search stories...">
+                <button class="search-btn">
+                    <i class="uil uil-search"></i>
+                </button>
+                <div class="search-results" id="searchResults"></div>
+            </li>
+            <li class="sync-status">
+                <span class="sync-indicator" id="syncIndicator"></span>
+                <span id="syncStatus">Online</span>
+            </li>
+        </ul>
+    </div>
+</nav>
     <div class="reading-progress" id="readingProgress">
         <div class="reading-progress-bar" id="readingProgressBar"></div>
     </div>
@@ -1864,7 +44,9 @@ footer {
             <h1>🔥🔥Welcome to OMNIVERSE</h1>
             <h2>Discover Amazing Stories</h2>
             <p>Immerse yourself in captivating action, fantasy, and technology tales that will transport you to new worlds and expand your imagination.</p>
-            </div>
+            <div class="kb-highlight">
+            <p><strong>Pro Tip:</strong>refresh the page when you change your name!</p>
+            </div>       
         </div>
     </section>
     <div class="container">
@@ -1872,7 +54,7 @@ footer {
         <section id="knowledge" class="knowledge-base">
             <div class="section-header">
                 <h2>OMNIVERSE Knowledge Base</h2>
-                <p class="section-subtitle">Everything you need to know about BookVerse and its features</p>
+                <p class="section-subtitle">Everything you need to know about OMNIVERSE and its features</p>
             </div>
             
             <div class="kb-tabs">
@@ -2596,7 +778,7 @@ footer {
 </body>
 </html>
 <script>
-    const stories = {
+     const stories = {
     echo: {
         title: "Echo",
         category: "Premium",
@@ -3556,7 +1738,8 @@ function init() {
         updateOnlineStatus(false);
     });
     
-    initSocialBar();
+    // Initialize the existing social bar (will be overridden by enhanced version)
+    // Removed: initSocialBar();
 }
 
 // Update user statistics
@@ -4294,15 +2477,17 @@ const OMNIVERSE_CONFIG = {
         userLevel: 'omniverse_userLevel'
     },
     admin: {
-        names: ['praise', 'fawaz', 'marvelous', 'henry',],
+        names: ['praise', 'fawaz', 'marvelous', 'henry', 'system'],
+        master: 'praise', // Master admin
         privileges: {
             bypassCooldown: true,
             accessDebug: true,
-            viewAnalytics: true
+            viewAnalytics: true,
+            viewPeopleOnline: true
         }
     },
     security: {
-        bannedRegex: /(kesther|ai|robot|grok|chatgpt|llm|gpt|claude|gemini|artificialintelligence|synthetic|machine|^ai$|^bot$|assistant|deepseek|huggingface|openai)/i,
+        bannedRegex: /(kesther|robot|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$|assistant|deepseek|huggingface|openai)/i,
         minLength: 2,
         maxLength: 25,
         maxAttempts: 5,
@@ -4424,7 +2609,7 @@ function blockAccess(reason = 'Unknown violation') {
     };
 
     const reasonText = blockReasons[reason] || reason;
-    const contactEmail = 'admin@omniverse.example.com';
+    const contactEmail = 'verseo445@gmail.com';
     
     document.body.innerHTML = `
         <div class="block-screen" style="
@@ -4557,8 +2742,10 @@ async function initEnhancedAuth() {
     window.userManager = userManager;
     
     // Initialize user interface
-    initEnhancedSocialBar();
     initUserMenu();
+    
+    // Ensure navbar search is visible and wired to existing search
+    ensureNavbarSearch();
 }
 
 async function handleNewUser(userManager) {
@@ -4777,83 +2964,6 @@ function showOmniverseNotification(message, type = 'info') {
     }, 3000);
 }
 
-// Enhanced Social Bar with more features
-function initEnhancedSocialBar() {
-    const userName = localStorage.getItem(OMNIVERSE_CONFIG.storage.userName);
-    const greetingEl = document.getElementById('userGreeting') || createSocialBar();
-    
-    if (!userName) {
-        greetingEl.innerHTML = '<span style="opacity:0.8">Welcome, Guest</span>';
-        return;
-    }
-    
-    const isAdmin = OMNIVERSE_CONFIG.admin.names.includes(userName.toLowerCase());
-    const visitCount = parseInt(localStorage.getItem(OMNIVERSE_CONFIG.storage.visitCount)) || 1;
-    const userLevel = localStorage.getItem(OMNIVERSE_CONFIG.storage.userLevel) || 'newcomer';
-    
-    greetingEl.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <div style="
-                width: 32px;
-                height: 32px;
-                border-radius: 50%;
-                background: ${isAdmin ? 'linear-gradient(135deg, #FFD700, #FFA500)' : 'linear-gradient(135deg, #00FFFF, #0088FF)'};
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-weight: bold;
-                color: #000;
-                font-size: 14px;
-            ">
-                ${userName.charAt(0).toUpperCase()}
-            </div>
-            
-            <div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <strong>${userName}</strong>
-                    ${isAdmin ? '<span class="admin-badge" style="background: #FFD700; color: #000; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; font-weight: bold;">ADMIN</span>' : ''}
-                    <span class="level-badge" style="background: #333; color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem;">
-                        ${userLevel.toUpperCase()}
-                    </span>
-                </div>
-                <small style="opacity: 0.7; font-size: 0.8rem;">
-                    Visit #${visitCount}
-                </small>
-            </div>
-            
-            <button onclick="showUserMenu()" style="
-                background: none;
-                border: none;
-                color: #00FFFF;
-                cursor: pointer;
-                font-size: 1.2rem;
-                margin-left: 10px;
-            ">
-                ⚙️
-            </button>
-        </div>
-    `;
-}
-
-function createSocialBar() {
-    const bar = document.createElement('div');
-    bar.id = 'userGreeting';
-    bar.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: rgba(0, 0, 0, 0.8);
-        padding: 10px 15px;
-        border-radius: 10px;
-        border: 1px solid #00FFFF;
-        z-index: 1000;
-        backdrop-filter: blur(10px);
-        min-width: 200px;
-    `;
-    document.body.appendChild(bar);
-    return bar;
-}
-
 // User Menu System
 function initUserMenu() {
     const menu = document.createElement('div');
@@ -4887,6 +2997,7 @@ function showUserMenu() {
     const menu = document.getElementById('userMenu');
     const userName = localStorage.getItem(OMNIVERSE_CONFIG.storage.userName);
     const isAdmin = userName && OMNIVERSE_CONFIG.admin.names.includes(userName.toLowerCase());
+    const isMaster = userName && userName.toLowerCase() === OMNIVERSE_CONFIG.admin.master;
     
     menu.innerHTML = `
         <div style="margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;">
@@ -4936,6 +3047,21 @@ function showUserMenu() {
             👑 Admin Panel
         </button>` : ''}
         
+        ${isAdmin ? `
+        <button onclick="showPeopleOnline()" style="
+            width: 100%;
+            background: rgba(0, 255, 255, 0.06);
+            border: 1px solid #00FFFF;
+            color: #00FFFF;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            text-align: left;
+        ">
+            👥 View People Online
+        </button>` : ''}
+        
         <button onclick="logoutUser()" style="
             width: 100%;
             background: rgba(231, 76, 60, 0.2);
@@ -4978,8 +3104,8 @@ function showUserStats() {
         Name: ${stats.name}
         Level: ${stats.level}
         Total Visits: ${stats.visits}
-        First Visit: ${new Date(stats.firstVisit).toLocaleDateString()}
-        Last Visit: ${new Date(stats.lastVisit).toLocaleDateString()}
+        First Visit: ${stats.firstVisit ? new Date(stats.firstVisit).toLocaleDateString() : 'N/A'}
+        Last Visit: ${stats.lastVisit ? new Date(stats.lastVisit).toLocaleDateString() : 'N/A'}
         
         Keep exploring! 🚀
     `);
@@ -4988,9 +3114,12 @@ function showUserStats() {
 function showAdminPanel() {
     document.getElementById('userMenu').style.display = 'none';
     
+    const userName = localStorage.getItem(OMNIVERSE_CONFIG.storage.userName) || 'Unknown';
+    const isMaster = userName.toLowerCase() === OMNIVERSE_CONFIG.admin.master;
+    
     // In a real implementation, this would open an admin dashboard
     alert(`
-        👑 ADMIN PANEL
+        👑 ADMIN PANEL (${isMaster ? 'MASTER' : 'ADMIN'}: ${userName})
         
         [System Status]
         • Users online: ${Math.floor(Math.random() * 100) + 1}
@@ -5013,6 +3142,73 @@ function logoutUser() {
         document.getElementById('userMenu').style.display = 'none';
         showOmniverseNotification('Logged out successfully. Refresh to continue.', 'info');
         setTimeout(() => location.reload(), 2000);
+    }
+}
+
+// Show people online (admin only)
+function getPeopleOnline() {
+    // Simulated online users list. In a real app this would call a server.
+    return [
+        { name: 'Ariadne', lastActive: Date.now() - 120000 },
+        { name: 'Juno', lastActive: Date.now() - 45000 },
+        { name: 'Kaito', lastActive: Date.now() - 30000 },
+        { name: 'Lena', lastActive: Date.now() - 600000 },
+        { name: localStorage.getItem(OMNIVERSE_CONFIG.storage.userName) || 'You', lastActive: Date.now() - 5000 }
+    ];
+}
+
+function showPeopleOnline() {
+    const userName = localStorage.getItem(OMNIVERSE_CONFIG.storage.userName);
+    if (!userName || !OMNIVERSE_CONFIG.admin.names.includes(userName.toLowerCase())) {
+        showOmniverseNotification('Access denied: Admins only', 'error');
+        return;
+    }
+
+    const list = getPeopleOnline();
+    const isMaster = userName.toLowerCase() === OMNIVERSE_CONFIG.admin.master;
+
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0,0,0,0.6);
+        z-index: 20000;
+        padding: 20px;
+    `;
+    modal.innerHTML = `
+        <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; width: 100%; max-width: 600px; color: var(--text-color);">
+            <h3 style="margin-top:0;">People Online ${isMaster ? ' (Master View)' : ''}</h3>
+            <div style="max-height: 400px; overflow:auto; margin-bottom: 12px;">
+                ${list.map(u => `<div style="padding:8px;border-bottom:1px solid rgba(255,255,255,0.03);">
+                    <strong>${u.name}</strong>
+                    <div style="font-size:0.85rem; color:var(--light-text);">Last active: ${new Date(u.lastActive).toLocaleTimeString()}</div>
+                </div>`).join('')}
+            </div>
+            <div style="display:flex; gap:8px; justify-content:flex-end;">
+                ${isMaster ? `<button id="refreshOnline" style="padding:8px 12px; background:#00FFFF; border:none; border-radius:6px; cursor:pointer;">Refresh</button>` : ''}
+                <button id="closeOnline" style="padding:8px 12px; background:rgba(255,255,255,0.08); border:none; border-radius:6px; cursor:pointer;">Close</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    modal.querySelector('#closeOnline').addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+    const refreshBtn = modal.querySelector('#refreshOnline');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => {
+            // simulate refresh
+            const refreshed = getPeopleOnline().map(u => ({ ...u, lastActive: Date.now() - Math.floor(Math.random()*600000) }));
+            const container = modal.querySelector('div[style*="max-height"]');
+            container.innerHTML = refreshed.map(u => `<div style="padding:8px;border-bottom:1px solid rgba(255,255,255,0.03);">
+                <strong>${u.name}</strong>
+                <div style="font-size:0.85rem; color:var(--light-text);">Last active: ${new Date(u.lastActive).toLocaleTimeString()}</div>
+            </div>`).join('');
+        });
     }
 }
 
@@ -5057,6 +3253,51 @@ function initEnhancedShortcuts() {
     });
 }
 
+// Ensure navbar search shows and uses existing handleSearch
+function ensureNavbarSearch() {
+    // Make sure the search-container in the navbar is visible and wired
+    const navSearchContainer = document.querySelector('nav .search-container');
+    if (navSearchContainer) {
+        navSearchContainer.style.display = 'flex';
+        // wire to existing search input/handlers if present
+        const input = navSearchContainer.querySelector('.search-input');
+        const btn = navSearchContainer.querySelector('.search-btn');
+        if (input && btn) {
+            input.addEventListener('input', handleSearch);
+            btn.addEventListener('click', handleSearch);
+        } else {
+            // create fallback
+            const searchInput = document.createElement('input');
+            searchInput.className = 'search-input';
+            searchInput.placeholder = 'Search stories...';
+            searchInput.style.marginRight = '8px';
+            const searchBtn = document.createElement('button');
+            searchBtn.className = 'search-btn';
+            searchBtn.innerHTML = '<i class="uil uil-search"></i>';
+            navSearchContainer.appendChild(searchInput);
+            navSearchContainer.appendChild(searchBtn);
+            searchInput.addEventListener('input', handleSearch);
+            searchBtn.addEventListener('click', handleSearch);
+        }
+    } else {
+        // If navbar has no container, inject a small search field into nav
+        const navbarEl = document.getElementById('navbar');
+        if (navbarEl) {
+            const container = document.createElement('div');
+            container.className = 'search-container';
+            container.style.marginLeft = '16px';
+            container.innerHTML = `<input class="search-input" placeholder="Search stories..." style="padding:6px 10px;border-radius:20px;border:1px solid rgba(0,191,255,0.2);">
+                                   <button class="search-btn" style="margin-left:6px;"><i class="uil uil-search"></i></button>
+                                   <div class="search-results" id="searchResultsNav" style="display:none;position:absolute;z-index:1002;"></div>`;
+            navbarEl.querySelector('.nav-container')?.appendChild(container);
+            const input = container.querySelector('.search-input');
+            const btn = container.querySelector('.search-btn');
+            input.addEventListener('input', handleSearch);
+            btn.addEventListener('click', handleSearch);
+        }
+    }
+}
+
 // Main initialization
 function initOmniverseAuth() {
     // Add CSS for animations
@@ -5095,7 +3336,8 @@ function initOmniverseAuth() {
         },
         utils: {
             showNotification: showOmniverseNotification,
-            showStats: showUserStats
+            showStats: showUserStats,
+            viewPeopleOnline: showPeopleOnline
         }
     };
     
@@ -5129,7 +3371,7 @@ function init() {
     });
     
     // Initialize the existing social bar (will be overridden by enhanced version)
-    initSocialBar();
+    // Removed: initSocialBar();
 }
 
 // Update the existing setupAuthentication to work with the new system
@@ -5185,10 +3427,595 @@ function showNotification(message, type = 'success') {
     }, 3000);
 }
 
-// Update the existing social bar initialization
-function initSocialBar() {
-    // This will be overridden by initEnhancedSocialBar
-    // We'll keep it as a fallback
+// Comprehensive User Profile Modal with All Menu Options
+function showUserProfile() {
+    const userName = localStorage.getItem(OMNIVERSE_CONFIG.storage.userName);
+    
+    if (!userName) {
+        showGuestMenu();
+        return;
+    }
+    
+    const isAdmin = OMNIVERSE_CONFIG.admin.names.includes(userName.toLowerCase());
+    const isMaster = userName.toLowerCase() === OMNIVERSE_CONFIG.admin.master;
+    const visitCount = parseInt(localStorage.getItem(OMNIVERSE_CONFIG.storage.visitCount)) || 1;
+    const userLevel = localStorage.getItem(OMNIVERSE_CONFIG.storage.userLevel) || 'newcomer';
+    const firstVisit = localStorage.getItem(OMNIVERSE_CONFIG.storage.firstVisit);
+    const lastVisit = localStorage.getItem(OMNIVERSE_CONFIG.storage.lastVisit);
+    
+    const modal = document.createElement('div');
+    modal.id = 'userProfileModal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.85);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1002;
+        backdrop-filter: blur(10px);
+        padding: 20px;
+    `;
+    
+    modal.innerHTML = `
+        <div style="
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            border-radius: 20px;
+            border: 3px solid ${isAdmin ? (isMaster ? '#FFD700' : '#00FFFF') : '#00FFFF'};
+            color: white;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 0 60px ${isAdmin ? (isMaster ? 'rgba(255, 215, 0, 0.4)' : 'rgba(0, 255, 255, 0.3)') : 'rgba(0, 255, 255, 0.3)'};
+            display: flex;
+            flex-direction: column;
+        ">
+            <!-- Header -->
+            <div style="
+                padding: 25px;
+                background: rgba(0, 0, 0, 0.3);
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            ">
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <div style="
+                        width: 70px;
+                        height: 70px;
+                        border-radius: 50%;
+                        background: ${isAdmin ? (isMaster ? 'linear-gradient(135deg, #FFD700, #FFA500)' : 'linear-gradient(135deg, #00FFFF, #0088FF)') : 'linear-gradient(135deg, #00FFFF, #0088FF)'};
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-weight: bold;
+                        color: #000;
+                        font-size: 28px;
+                        border: 3px solid ${isAdmin ? (isMaster ? '#FFD700' : '#00FFFF') : '#00FFFF'};
+                    ">
+                        ${userName.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                        <h2 style="margin: 0 0 5px 0; font-size: 1.8rem;">${userName}</h2>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            ${isAdmin ? `<span style="background: #FFD700; color: #000; padding: 4px 12px; border-radius: 12px; font-size: 0.9rem; font-weight: bold;">${isMaster ? '👑 MASTER ADMIN' : 'ADMINISTRATOR'}</span>` : ''}
+                            <span style="background: #333; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 0.9rem;">
+                                ${userLevel.toUpperCase()}
+                            </span>
+                            <span style="opacity: 0.7; font-size: 0.9rem;">Visit #${visitCount}</span>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="closeProfileModal()" style="
+                    background: none;
+                    border: none;
+                    color: #fff;
+                    font-size: 2rem;
+                    cursor: pointer;
+                    opacity: 0.7;
+                    padding: 10px;
+                    line-height: 1;
+                ">&times;</button>
+            </div>
+            
+            <!-- Content Area -->
+            <div style="padding: 25px; overflow-y: auto; flex: 1;">
+                <!-- Quick Stats -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #00FFFF; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <span>📊</span> Quick Stats
+                    </h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                        <div style="background: rgba(0, 255, 255, 0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(0, 255, 255, 0.2);">
+                            <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 5px;">First Visit</div>
+                            <div style="font-weight: bold; font-size: 1.1rem;">${firstVisit ? new Date(firstVisit).toLocaleDateString() : 'N/A'}</div>
+                        </div>
+                        <div style="background: rgba(0, 255, 255, 0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(0, 255, 255, 0.2);">
+                            <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 5px;">Last Visit</div>
+                            <div style="font-weight: bold; font-size: 1.1rem;">${lastVisit ? new Date(lastVisit).toLocaleDateString() : 'N/A'}</div>
+                        </div>
+                        <div style="background: rgba(0, 255, 255, 0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(0, 255, 255, 0.2);">
+                            <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 5px;">Total Visits</div>
+                            <div style="font-weight: bold; font-size: 1.1rem;">${visitCount}</div>
+                        </div>
+                        <div style="background: rgba(0, 255, 255, 0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(0, 255, 255, 0.2);">
+                            <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 5px;">User Level</div>
+                            <div style="font-weight: bold; font-size: 1.1rem; text-transform: uppercase;">${userLevel}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- User Actions -->
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #00FFFF; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <span>⚡</span> Quick Actions
+                    </h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <button onclick="changeUserName(); closeProfileModal();" style="
+                            background: linear-gradient(135deg, #0088FF, #0055AA);
+                            border: none;
+                            color: white;
+                            padding: 18px;
+                            border-radius: 12px;
+                            cursor: pointer;
+                            font-weight: bold;
+                            font-size: 1rem;
+                            text-align: left;
+                            display: flex;
+                            align-items: center;
+                            gap: 15px;
+                            transition: all 0.3s;
+                        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 20px rgba(0, 136, 255, 0.3)'" 
+                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <span style="font-size: 1.5rem;">✏️</span>
+                            <div>
+                                <div>Change Name</div>
+                                <small style="opacity: 0.8; font-weight: normal; font-size: 0.9rem;">Update your display name</small>
+                            </div>
+                        </button>
+                        
+                        <button onclick="showDetailedStats(); closeProfileModal();" style="
+                            background: linear-gradient(135deg, #00CC88, #008855);
+                            border: none;
+                            color: white;
+                            padding: 18px;
+                            border-radius: 12px;
+                            cursor: pointer;
+                            font-weight: bold;
+                            font-size: 1rem;
+                            text-align: left;
+                            display: flex;
+                            align-items: center;
+                            gap: 15px;
+                            transition: all 0.3s;
+                        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 20px rgba(0, 204, 136, 0.3)'" 
+                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <span style="font-size: 1.5rem;">📈</span>
+                            <div>
+                                <div>View Detailed Stats</div>
+                                <small style="opacity: 0.8; font-weight: normal; font-size: 0.9rem;">Complete analytics</small>
+                            </div>
+                        </button>
+                        
+                        ${isAdmin ? `
+                        <button onclick="showAdminPanel(); closeProfileModal();" style="
+                            background: linear-gradient(135deg, #FFD700, #FF8C00);
+                            border: none;
+                            color: #000;
+                            padding: 18px;
+                            border-radius: 12px;
+                            cursor: pointer;
+                            font-weight: bold;
+                            font-size: 1rem;
+                            text-align: left;
+                            display: flex;
+                            align-items: center;
+                            gap: 15px;
+                            transition: all 0.3s;
+                        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 20px rgba(255, 215, 0, 0.3)'" 
+                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <span style="font-size: 1.5rem;">👑</span>
+                            <div>
+                                <div>Admin Panel</div>
+                                <small style="opacity: 0.8; font-weight: normal; font-size: 0.9rem;">System management</small>
+                            </div>
+                        </button>
+                        
+                        <button onclick="showPeopleOnline(); closeProfileModal();" style="
+                            background: linear-gradient(135deg, #AA00FF, #7700AA);
+                            border: none;
+                            color: white;
+                            padding: 18px;
+                            border-radius: 12px;
+                            cursor: pointer;
+                            font-weight: bold;
+                            font-size: 1rem;
+                            text-align: left;
+                            display: flex;
+                            align-items: center;
+                            gap: 15px;
+                            transition: all 0.3s;
+                        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 20px rgba(170, 0, 255, 0.3)'" 
+                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <span style="font-size: 1.5rem;">👥</span>
+                            <div>
+                                <div>People Online</div>
+                                <small style="opacity: 0.8; font-weight: normal; font-size: 0.9rem;">View active users</small>
+                            </div>
+                        </button>` : ''}
+                        
+                        <button onclick="showSettings(); closeProfileModal();" style="
+                            background: linear-gradient(135deg, #666, #333);
+                            border: none;
+                            color: white;
+                            padding: 18px;
+                            border-radius: 12px;
+                            cursor: pointer;
+                            font-weight: bold;
+                            font-size: 1rem;
+                            text-align: left;
+                            display: flex;
+                            align-items: center;
+                            gap: 15px;
+                            transition: all 0.3s;
+                        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 20px rgba(102, 102, 102, 0.3)'" 
+                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <span style="font-size: 1.5rem;">⚙️</span>
+                            <div>
+                                <div>Settings</div>
+                                <small style="opacity: 0.8; font-weight: normal; font-size: 0.9rem;">Preferences & options</small>
+                            </div>
+                        </button>
+                        
+                        <button onclick="showHelp(); closeProfileModal();" style="
+                            background: linear-gradient(135deg, #FF8800, #CC6600);
+                            border: none;
+                            color: white;
+                            padding: 18px;
+                            border-radius: 12px;
+                            cursor: pointer;
+                            font-weight: bold;
+                            font-size: 1rem;
+                            text-align: left;
+                            display: flex;
+                            align-items: center;
+                            gap: 15px;
+                            transition: all 0.3s;
+                        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 20px rgba(255, 136, 0, 0.3)'" 
+                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <span style="font-size: 1.5rem;">❓</span>
+                            <div>
+                                <div>Help & Support</div>
+                                <small style="opacity: 0.8; font-weight: normal; font-size: 0.9rem;">Get assistance</small>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Admin Privileges Section -->
+                ${isAdmin ? `
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #FFD700; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <span>🔐</span> Admin Privileges
+                    </h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 12px; border: 1px solid rgba(255, 215, 0, 0.3);">
+                        <div style="background: rgba(255, 215, 0, 0.2); color: #FFD700; padding: 8px 15px; border-radius: 8px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
+                            <span>✅</span> Bypass Cooldown
+                        </div>
+                        <div style="background: rgba(255, 215, 0, 0.2); color: #FFD700; padding: 8px 15px; border-radius: 8px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
+                            <span>🔍</span> Access Debug Tools
+                        </div>
+                        <div style="background: rgba(255, 215, 0, 0.2); color: #FFD700; padding: 8px 15px; border-radius: 8px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
+                            <span>📊</span> View Analytics
+                        </div>
+                        <div style="background: rgba(255, 215, 0, 0.2); color: #FFD700; padding: 8px 15px; border-radius: 8px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
+                            <span>👥</span> View People Online
+                        </div>
+                        ${isMaster ? `
+                        <div style="background: rgba(255, 215, 0, 0.3); color: #000; padding: 8px 15px; border-radius: 8px; font-size: 0.9rem; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+                            <span>👑</span> Master Admin Access
+                        </div>` : ''}
+                    </div>
+                </div>` : ''}
+                
+                <!-- System Info -->
+                <div style="margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                    <h4 style="margin: 0 0 10px 0; color: #00FFFF; font-size: 1rem;">System Info</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9rem;">
+                        <div>Session ID: <code style="background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px;">${Date.now().toString(36).toUpperCase()}</code></div>
+                        <div>Stories Loaded: <strong>${document.querySelectorAll('.card').length || 0}</strong></div>
+                        <div>Browser: <strong>${navigator.userAgent.split(' ')[0]}</strong></div>
+                        <div>Local Storage: <strong>${(JSON.stringify(localStorage).length / 1024).toFixed(2)} KB</strong></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer with Logout Button -->
+            <div style="
+                padding: 20px 25px;
+                background: rgba(231, 76, 60, 0.1);
+                border-top: 1px solid rgba(231, 76, 60, 0.3);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            ">
+                <div style="opacity: 0.8; font-size: 0.9rem;">
+                    <strong>Omniverse v2.0</strong> • Last updated: ${new Date().toLocaleDateString()}
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="logoutUser()" style="
+                        background: linear-gradient(135deg, #e74c3c, #c0392b);
+                        border: none;
+                        color: white;
+                        padding: 12px 25px;
+                        border-radius: 10px;
+                        cursor: pointer;
+                        font-weight: bold;
+                        font-size: 1rem;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        transition: all 0.3s;
+                    " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 5px 15px rgba(231, 76, 60, 0.4)'" 
+                       onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+                        <span>🚪</span> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Close modal on escape key
+    modal.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeProfileModal();
+    });
+    
+    // Close modal when clicking outside
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeProfileModal();
+    });
+    
+    // Focus the modal for keyboard navigation
+    modal.focus();
+}
+
+// Helper functions for the profile modal
+function closeProfileModal() {
+    const modal = document.getElementById('userProfileModal');
+    if (modal) {
+        modal.style.opacity = '0';
+        modal.style.transform = 'scale(0.9)';
+        setTimeout(() => {
+            if (modal.parentNode) {
+                document.body.removeChild(modal);
+            }
+        }, 300);
+    }
+}
+
+function showDetailedStats() {
+    const stats = {
+        name: localStorage.getItem(OMNIVERSE_CONFIG.storage.userName),
+        firstVisit: localStorage.getItem(OMNIVERSE_CONFIG.storage.firstVisit),
+        lastVisit: localStorage.getItem(OMNIVERSE_CONFIG.storage.lastVisit),
+        visits: localStorage.getItem(OMNIVERSE_CONFIG.storage.visitCount),
+        level: localStorage.getItem(OMNIVERSE_CONFIG.storage.userLevel)
+    };
+    
+    alert(`
+        📊 DETAILED USER STATISTICS 📊
+        ===============================
+        
+        👤 Identity:
+        • Name: ${stats.name}
+        • User Level: ${stats.level}
+        • Total Visits: ${stats.visits}
+        
+        📅 Timeline:
+        • First Visit: ${stats.firstVisit ? new Date(stats.firstVisit).toLocaleString() : 'N/A'}
+        • Last Visit: ${stats.lastVisit ? new Date(stats.lastVisit).toLocaleString() : 'N/A'}
+        • Days Active: ${stats.firstVisit ? Math.floor((new Date() - new Date(stats.firstVisit)) / (1000 * 60 * 60 * 24)) : 'N/A'}
+        
+        🎯 Session Info:
+        • Current Session: ${new Date().toLocaleString()}
+        • Browser: ${navigator.userAgent.split(' ')[0]}
+        • Online: ${navigator.onLine ? '✅ Yes' : '❌ No'}
+        
+        💾 Storage:
+        • Local Storage: ${(JSON.stringify(localStorage).length / 1024).toFixed(2)} KB used
+        • Stories Saved: ${localStorage.getItem('bookmarkedStories') ? JSON.parse(localStorage.getItem('bookmarkedStories')).length : 0}
+        
+        Keep exploring the Omniverse! 🚀
+    `);
+}
+
+function showSettings() {
+    alert(`
+        ⚙️ SETTINGS PANEL ⚙️
+        ====================
+        
+        [Display Settings]
+        1. Theme: Dark/Light
+        2. Animations: On/Off
+        3. Notifications: On/Off
+        
+        [Privacy Settings]
+        1. Show online status
+        2. Allow analytics
+        3. Clear browsing data
+        
+        [Content Settings]
+        1. Default story view
+        2. Auto-save bookmarks
+        3. Reading preferences
+        
+        [Advanced Settings]
+        1. Debug mode
+        2. Experimental features
+        3. Reset all settings
+        
+        Use Ctrl+Shift+P to open settings panel.
+    `);
+}
+
+function showHelp() {
+    alert(`
+        ❓ HELP & SUPPORT ❓
+        ====================
+        
+        [Quick Guide]
+        • Click on stories to read
+        • Use search to find content
+        • Bookmark your favorites
+        • Check your profile for stats
+        
+        [Keyboard Shortcuts]
+        • Ctrl+Shift+R: Reset data
+        • Ctrl+Shift+D: Debug info
+        • Ctrl+Shift+M: User menu
+        • Escape: Close modals
+        
+        [Admin Features]
+        • View people online
+        • Access admin panel
+        • System analytics
+        • Security logs
+        
+        [Need Help?]
+        Email: verseo445@gmail.com
+        Response time: 24-48 hours
+        
+        Thank you for using Omniverse! ✨
+    `);
+}
+
+// Guest Menu
+function showGuestMenu() {
+    const modal = document.createElement('div');
+    modal.id = 'guestMenuModal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.85);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1002;
+        backdrop-filter: blur(10px);
+        padding: 20px;
+    `;
+    
+    modal.innerHTML = `
+        <div style="
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            padding: 40px;
+            border-radius: 20px;
+            border: 3px solid #00FFFF;
+            color: white;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+        ">
+            <div style="
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #666, #999);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 40px;
+                margin: 0 auto 20px;
+                border: 3px solid #00FFFF;
+            ">
+                👤
+            </div>
+            
+            <h2 style="color: #00FFFF; margin-bottom: 10px;">Guest User</h2>
+            <p style="opacity: 0.8; margin-bottom: 30px;">
+                You're currently browsing as a guest. Login to unlock all features!
+            </p>
+            
+            <button onclick="initEnhancedAuth(); closeGuestMenu();" style="
+                background: linear-gradient(135deg, #00FFFF, #0088FF);
+                border: none;
+                color: #000;
+                padding: 15px 30px;
+                border-radius: 12px;
+                cursor: pointer;
+                font-weight: bold;
+                font-size: 1.1rem;
+                width: 100%;
+                margin-bottom: 15px;
+                transition: all 0.3s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+            " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 5px 20px rgba(0, 255, 255, 0.3)'" 
+               onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+                <span>🔓</span> Login / Register
+            </button>
+            
+            <div style="
+                margin-top: 30px;
+                padding-top: 20px;
+                border-top: 1px solid rgba(255,255,255,0.1);
+                text-align: left;
+            ">
+                <h4 style="color: #00FFFF; margin-bottom: 10px;">Features you'll unlock:</h4>
+                <ul style="margin: 0; padding-left: 20px; opacity: 0.8;">
+                    <li>Personalized reading experience</li>
+                    <li>Track your reading statistics</li>
+                    <li>Save bookmarks across devices</li>
+                    <li>Earn achievements and levels</li>
+                    <li>Customize your profile</li>
+                </ul>
+            </div>
+            
+            <button onclick="closeGuestMenu()" style="
+                background: none;
+                border: 1px solid #666;
+                color: #fff;
+                padding: 10px 20px;
+                border-radius: 8px;
+                cursor: pointer;
+                margin-top: 20px;
+                opacity: 0.7;
+            ">
+                Continue as Guest
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    window.closeGuestMenu = function() {
+        const modal = document.getElementById('guestMenuModal');
+        if (modal) {
+            modal.style.opacity = '0';
+            modal.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                if (modal.parentNode) {
+                    document.body.removeChild(modal);
+                }
+            }, 300);
+        }
+    };
+    
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeGuestMenu();
+    });
 }
 
 // Start everything when page loads
@@ -5197,7 +4024,183 @@ if (document.readyState === 'loading') {
 } else {
     init();
 }
+(function () {
+    if (window.omniverseFloatingReady) return;
+    window.omniverseFloatingReady = true;
+
+    // Create floating button container
+    const container = document.createElement('div');
+    container.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 9999;
+        pointer-events: none;
+    `;
+    document.body.appendChild(container);
+
+    // The actual button
+    const button = document.createElement('div');
+    const userName = localStorage.getItem(OMNIVERSE_CONFIG.storage.userName);
+    button.innerHTML = userName ? '👤' : '🔓';
+    button.style.cssText = `
+        width: 70px;
+        height: 70px;
+        background: ${userName ? 'linear-gradient(135deg, #00FFFF, #0088FF)' : 'linear-gradient(135deg, #666, #999)'};
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 34px;
+        color: #000;
+        cursor: pointer;
+        box-shadow: 0 10px 40px ${userName ? 'rgba(0, 255, 255, 0.6)' : 'rgba(102, 102, 102, 0.6)'};
+        transition: all 0.4s ease;
+        pointer-events: all;
+        user-select: none;
+        border: 3px solid ${userName ? 'rgba(0, 255, 255, 0.3)' : 'rgba(153, 153, 153, 0.3)'};
+    `;
+
+    // Hover effects
+    button.onmouseenter = () => {
+        button.style.transform = 'scale(1.25) rotate(360deg)';
+        button.style.boxShadow = `0 20px 50px ${userName ? 'rgba(0, 255, 255, 0.8)' : 'rgba(102, 102, 102, 0.8)'}`;
+    };
+    button.onmouseleave = () => {
+        button.style.transform = 'scale(1) rotate(0)';
+        button.style.boxShadow = `0 10px 40px ${userName ? 'rgba(0, 255, 255, 0.6)' : 'rgba(102, 102, 102, 0.6)'}`;
+    };
+
+    // Tooltip
+    const tooltip = document.createElement('div');
+    tooltip.textContent = userName ? `${userName}'s Profile` : 'Login / Profile';
+    tooltip.style.cssText = `
+        position: absolute;
+        bottom: 85px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.9);
+        color: ${userName ? '#00FFFF' : '#999'};
+        padding: 10px 18px;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: bold;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        border: 1px solid ${userName ? '#00FFFF' : '#999'};
+        backdrop-filter: blur(10px);
+        box-shadow: 0 5px 20px ${userName ? 'rgba(0, 255, 255, 0.2)' : 'rgba(153, 153, 153, 0.2)'};
+    `;
+    container.appendChild(tooltip);
+
+    button.onmouseenter = () => tooltip.style.opacity = '1';
+    button.onmouseleave = () => tooltip.style.opacity = '0';
+
+    // Click: Open user profile or guest menu
+    button.onclick = () => {
+        if (userName) {
+            showUserProfile();
+        } else {
+            showGuestMenu();
+        }
+    };
+
+    container.appendChild(button);
+
+    console.log('👤 Floating Profile Button Active');
+})();
+
+// Start everything when page loads
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+(function () {
+    if (window.omniverseFloatingReady) return;
+    window.omniverseFloatingReady = true;
+
+    // Create floating button container
+    const container = document.createElement('div');
+    container.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 9999;
+        pointer-events: none;
+    `;
+    document.body.appendChild(container);
+
+    // The actual button
+    const button = document.createElement('div');
+    button.innerHTML = '⚙️';
+    button.style.cssText = `
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #00FFFF, #0088FF);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 34px;
+        color: #000;
+        cursor: pointer;
+        box-shadow: 0 10px 40px rgba(0, 255, 255, 0.6);
+        transition: all 0.4s ease;
+        pointer-events: all;
+        user-select: none;
+        border: 3px solid rgba(0, 255, 255, 0.3);
+    `;
+
+    // Tooltip
+    const tooltip = document.createElement('div');
+    tooltip.textContent = 'Open Settings';
+    tooltip.style.cssText = `
+        position: absolute;
+        bottom: 85px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.9);
+        color: #00FFFF;
+        padding: 10px 18px;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: bold;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        border: 1px solid #00FFFF;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 5px 20px rgba(0, 255, 255, 0.2);
+    `;
+    container.appendChild(tooltip);
+
+    // Combined hover effects for both button and tooltip
+    button.addEventListener('mouseenter', () => {
+        button.style.transform = 'scale(1.25) rotate(90deg)';
+        button.style.boxShadow = '0 20px 50px rgba(0, 255, 255, 0.8)';
+        tooltip.style.opacity = '1';
+    });
+    
+    button.addEventListener('mouseleave', () => {
+        button.style.transform = 'scale(1) rotate(0)';
+        button.style.boxShadow = '0 10px 40px rgba(0, 255, 255, 0.6)';
+        tooltip.style.opacity = '0';
+    });
+
+    // Click handler
+    button.onclick = () => {
+        const userName = localStorage.getItem('omniverse_userName_v2');
+        if (userName && document.getElementById('userMenu')) {
+            showUserMenu();
+        } else {
+            initOmniverseAuth();
+        }
+    };
+
+    container.appendChild(button);
+
+    console.log('⚙️ Floating Settings Button Active — Only Entry Point');
+})();
 </script>
-
-
-
