@@ -2748,12 +2748,6 @@ video {
         justify-content: center;
         max-width: 250px;
     }
-    
-    .video-title {
-        font-size: 2rem;
-        padding: 1.5rem;
-    }
-}
 
 @media (max-width: 480px) {
     .stats-grid {
@@ -2770,11 +2764,6 @@ video {
     
     .message-bubble {
         padding: 2rem 1.5rem;
-    }
-    
-    .video-stats {
-        flex-direction: column;
-        gap: 1rem;
     }
 }
 
