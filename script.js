@@ -1709,17 +1709,17 @@ const OMNIVERSE_CONFIG = {
         }
     },
     security: {
-        bannedRegex: /(robot|ai|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$|assistant|deepseek|huggingface|openai)/i,
+        bannedRegex: /(robot|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$|assistant|deepseek|huggingface|openai)/i,
         minLength: 2,
         maxLength: 25,
         maxAttempts: 5,
         cooldownTime: 30000,
-        adminPassword: '0122' // Admin password
+        adminPassword: '0122'
     },
     ui: {
         theme: 'dark',
         animations: true,
-        sounds: false
+        sounds: true
     }
 };
 
@@ -2405,10 +2405,10 @@ function showWelcomeMessage(userData) {
 
 function showWelcomeBack(userData) {
     const messages = {
-        admin: `👑 Welcome back, Admin ${userData.name}! \nSession ${userData.visitCount} initialized. 🔥`,
-        veteran: `🌟 Welcome back, ${userData.name}! \nGood to see you again (visit #${userData.visitCount}).`,
-        regular: `👋 Welcome back, ${userData.name}! \nContinue your journey (visit #${userData.visitCount}).`,
-        newcomer: `🚀 Welcome back, ${userData.name}! \nNice to see you again!`
+        admin: `👑 Welcome back, Admin ${userData.name}! happy 2026\nSession ${userData.visitCount} initialized. 🔥`,
+        veteran: `🌟 Welcome back, ${userData.name}! happy 2026 \nGood to see you again (visit #${userData.visitCount}).`,
+        regular: `👋 Welcome back, ${userData.name}! happy 2026\nContinue your journey (visit #${userData.visitCount}).`,
+        newcomer: `🚀 Welcome back, ${userData.name}! happy 2026\nNice to see you again!`
     };
     
     const message = userData.isAdmin ? messages.admin : messages[userData.level];
