@@ -1709,7 +1709,7 @@ const OMNIVERSE_CONFIG = {
         }
     },
     security: {
-        bannedRegex: /(robot|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$|assistant|deepseek|huggingface|openai)/i,
+        bannedRegex: /(robot|ai|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$|assistant|deepseek|huggingface|openai)/i,
         minLength: 2,
         maxLength: 25,
         maxAttempts: 5,
