@@ -818,48 +818,6 @@
         ]
     }
 };
-document.getElementById('contactForm')?.addEventListener('submit', async function(e) {
-    e.preventDefault(); // Prevent normal submit & redirect
-
-    const form = e.target;
-    const messageDiv = document.getElementById('contactMessage');
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const originalBtnText = submitBtn.innerHTML;
-
-    // Show loading state
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span class="loading"></span> Sending...';
-
-    // Replace YOUR_FORM_ID with your actual Formspark form ID
-    const action = 'https://submit-form.com/YOUR_FORM_ID';
-
-    try {
-        const response = await fetch(action, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(Object.fromEntries(new FormData(form)))
-        });
-
-        if (response.ok) {
-            // Success - use your existing notification system
-            showNotification('Thank you! Your message has been sent successfully. ✨', 'success');
-            messageDiv.innerHTML = ''; // Clear any old message
-            form.reset(); // Clear the form
-        } else {
-            throw new Error('Submission failed');
-        }
-    } catch (err) {
-        // Error - custom message
-        showNotification('Oops! Something went wrong. Please try again later.', 'error');
-    } finally {
-        // Reset button
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalBtnText;
-    }
-});
 // DOM Elements
 const readBtns = document.querySelectorAll('.read-btn');
 const storyReader = document.getElementById('storyReader');
@@ -1585,41 +1543,6 @@ function showNotification(message, type = 'success') {
     }, 3000);
 }
 
-// Update UI based on authentication state
-function updateUserUI(user) {
-    if (user) {
-        // User is signed in (guard element access)
-        if (userName) userName.textContent = user.name;
-        if (userEmail) userEmail.textContent = user.email;
-        if (signInBtn) signInBtn.style.display = 'none';
-        if (signOutBtn) signOutBtn.style.display = 'block';
-
-        // Update user avatar if available
-        if (userAvatar) {
-            if (user.picture) {
-                userAvatar.innerHTML = `<img src="${user.picture}" alt="${user.name}">`;
-            } else {
-                userAvatar.innerHTML = `<i class="uil uil-user"></i>`;
-            }
-        }
-
-        // Update menu stats
-        updateMenuStats();
-    } else {
-        // User is not signed in (guard element access)
-        if (userName) userName.textContent = 'Guest';
-        if (userEmail) userEmail.textContent = 'Sign in to save progress';
-        if (signInBtn) signInBtn.style.display = 'block';
-        if (signOutBtn) signOutBtn.style.display = 'none';
-        if (userAvatar) userAvatar.innerHTML = `<i class="uil uil-user"></i>`;
-
-        // Reset menu stats
-        if (menuStoriesRead) menuStoriesRead.textContent = '0';
-        if (menuReadingTime) menuReadingTime.textContent = '0h';
-        if (menuBookmarks) menuBookmarks.textContent = '0';
-    }
-}
-
 // Update menu statistics
 function updateMenuStats() {
     if (currentUser && userData[currentUser.id]) {
@@ -1629,63 +1552,7 @@ function updateMenuStats() {
         if (menuBookmarks) menuBookmarks.textContent = data.stats?.bookmarks || 0;
     }
 }
-
-// Load user data
-function loadUserData(userId) {
-    if (userData[userId]) {
-        // Update global state with user data
-        bookmarkedStories = userData[userId].bookmarks || [];
-        userStats = userData[userId].stats || userStats;
- 
-        // Update UI
-        updateBookmarksSection();
-        updateUserStats();
-        updateStorageInfo();
-    }
-}
-
-// Save user data
-function saveUserData() {
-    if (currentUser) {
-        if (!userData[currentUser.id]) {
-            userData[currentUser.id] = {};
-        }
- 
-        userData[currentUser.id].bookmarks = bookmarkedStories;
-        userData[currentUser.id].stats = userStats;
-        userData[currentUser.id].lastSync = new Date().toISOString();
- 
-        localStorage.setItem('userData', JSON.stringify(userData));
-        updateMenuStats();
-    }
-}
-
-// Handle sign out
-function handleSignOut() {
-    currentUser = null;
-    localStorage.removeItem('currentUser');
-    updateUserUI(null);
-    showNotification('Signed out successfully');
-    // Reset to guest data
-    bookmarkedStories = [];
-    userStats = { readingTime: 0, storiesRead: 0, bookmarks: 0, achievements: 0, streak: 0 };
-    localStorage.setItem('bookmarkedStories', JSON.stringify(bookmarkedStories));
-    localStorage.setItem('userStats', JSON.stringify(userStats));
-    updateBookmarksSection();
-    updateUserStats();
-    updateStorageInfo();
-}
-
-// Setup authentication
-function setupAuthentication() {
-    // Check if user is already signed in
-    if (currentUser) {
-        updateUserUI(currentUser);
-        loadUserData(currentUser.id);
-    } else {
-        updateUserUI(null);
-    }
-}// ==================== ENHANCED OMNIVERSE AUTHENTICATION SYSTEM ====================
+// ==================== ENHANCED OMNIVERSE AUTHENTICATION SYSTEM ====================
 
 // Configuration object for better maintainability
 const OMNIVERSE_CONFIG = {
@@ -1709,12 +1576,12 @@ const OMNIVERSE_CONFIG = {
         }
     },
     security: {
-        bannedRegex: /(robot|ai|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$|assistant|deepseek|huggingface|openai)/i,
+        bannedRegex: /(robot|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$|assistant|deepseek|huggingface|openai)/i,
         minLength: 2,
         maxLength: 25,
         maxAttempts: 5,
         cooldownTime: 30000,
-        adminPassword: '0122'
+        adminPassword: 'OmniverseAdmin2026!'
     },
     ui: {
         theme: 'dark',
@@ -3399,7 +3266,7 @@ function showDetailedStats() {
         • Current Session: ${new Date().toLocaleString()}
         • Browser: ${navigator.userAgent.split(' ')[0]}
         • Online: ${navigator.onLine ? '✅ Yes' : '❌ No'}
-        ${stats.type === 'admin' ? '• Admin Password: 0122' : ''}
+        ${stats.type === 'admin' ? `• Admin Privileges: Enabled` : ''}
         
         💾 Storage:
         • Local Storage: ${(JSON.stringify(localStorage).length / 1024).toFixed(2)} KB used
@@ -3453,9 +3320,7 @@ function showHelp() {
         • Access admin panel
         • System analytics
         • Security logs
-        
-        [Admin Password]
-        • Password: 0122
+    
         
         [Need Help?]
         Email: verseo445@gmail.com
