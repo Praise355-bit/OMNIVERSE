@@ -1565,7 +1565,7 @@ const OMNIVERSE_CONFIG = {
         userLevel: 'omniverse_userLevel'
     },
     admin: {
-        names: ['praise', 'fawaz', 'marvelous', 'henry', 'system'],
+        names: ['praise', 'fawaz', 'marvelous', 'henry',],
         master: 'praise',
         experts: ['fawaz', 'marvelous'],
         privileges: {
@@ -1576,7 +1576,7 @@ const OMNIVERSE_CONFIG = {
         }
     },
     security: {
-        bannedRegex: /(robot|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$|assistant|deepseek|huggingface|openai)/i,
+        bannedRegex: /(robot|ai|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$|assistant|deepseek|huggingface|openai)/i,
         minLength: 2,
         maxLength: 25,
         maxAttempts: 5,
@@ -1584,7 +1584,7 @@ const OMNIVERSE_CONFIG = {
         adminPassword: '0122'
     },
     ui: {
-        theme: 'dark',
+        theme: 'light',
         animations: true,
         sounds: true
     }
