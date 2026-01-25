@@ -1581,7 +1581,7 @@ const OMNIVERSE_CONFIG = {
         maxLength: 25,
         maxAttempts: 5,
         cooldownTime: 30000,
-        adminPassword: 'OmniverseAdmin2026!'
+        adminPassword: '0122'
     },
     ui: {
         theme: 'dark',
