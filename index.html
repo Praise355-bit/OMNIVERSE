@@ -239,37 +239,98 @@
                     </ul>
                 </div>
             </div>
-             <section id="about" class="section">
-        <div class="container">
-            <div class="section-title">
-                <h2>About Me</h2>
-            </div>
-            <div class="about-container">
-                <div class="about-image">
-                    <img src="praise.jpg" alt="Profile Photo">
+            <!-- Update your existing about section with this -->
+<section id="about" class="section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Our Team</h2>
+            <p class="section-subtitle">Meet the creators behind OMNIVERSE</p>
+        </div>
+        
+        <div class="team-container">
+            <!-- Praise Tunde -->
+            <div class="team-card">
+                <div class="team-image">
+                    <img src="images/praise.jpg" alt="Praise Tunde">
+                    <div class="team-badge">Founder & Developer</div>
                 </div>
-                <div class="about-text">
-                    <h3>Hello, I'm Praise Tunde</h3>
-                    <p>I'm a passionate 9-year-old web developer with a keen eye for design. I have studied in <strong>He Reigns Academy</strong> and <strong>Goldland International</strong>.</p>
-                    <p>My approach combines technical skills with creativity. I love learning new things about computers every day.</p>
-                    <div class="about-stats">
-                        <div class="stat-item">
-                            <h4>3+</h4>
-                            <p>Projects</p>
+                <div class="team-info">
+                    <h3>Praise Tunde</h3>
+                    <p class="team-role">Founder & Web Developer</p>
+                    <p class="team-desc">9-year-old developer with a passion for creating immersive digital experiences. Studies at He Reigns Academy and Goldland International.</p>
+                    <div class="team-stats">
+                        <div class="team-stat">
+                            <span class="stat-number">3+</span>
+                            <span class="stat-label">Projects</span>
                         </div>
-                        <div class="stat-item">
-                            <h4>9+</h4>
-                            <p>Years Old</p>
+                        <div class="team-stat">
+                            <span class="stat-number">10</span>
+                            <span class="stat-label">Years Old</span>
                         </div>
-                        <div class="stat-item">
-                            <h4>2</h4>
-                            <p>Schools</p>
+                        <div class="team-stat">
+                            <span class="stat-number">2</span>
+                            <span class="stat-label">Schools</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Kesther -->
+            <div class="team-card">
+                <div class="team-image">
+                    <img src="images/kesther.png" alt="Kesther">
+                    <div class="team-badge social-badge">Social Curator</div>
+                </div>
+                <div class="team-info">
+                    <h3>Kesther</h3>
+                    <p class="team-role">Social Media & Community Manager</p>
+                    <p class="team-desc">Connects readers through engaging content and community discussions. Manages our social presence and fosters reader interactions across platforms.</p>
+                    <div class="team-stats">
+                        <div class="team-stat">
+                            <span class="stat-number">4</span>
+                            <span class="stat-label">Groups</span>
+                        </div>
+                        <div class="team-stat">
+                            <span class="stat-number">100+</span>
+                            <span class="stat-label">Members</span>
+                        </div>
+                        <div class="team-stat">
+                            <span class="stat-number">24/7</span>
+                            <span class="stat-label">Active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Fawaz -->
+            <div class="team-card">
+                <div class="team-image">
+                    <img src="images/fawaz.png" alt="Fawaz">
+                    <div class="team-badge creator-badge">Story Creator</div>
+                </div>
+                <div class="team-info">
+                    <h3>Fawaz</h3>
+                    <p class="team-role">Lead Story Writer & Creative Director</p>
+                    <p class="team-desc">Crafts immersive narratives that transport readers to new worlds. Specializes in fantasy, action, and technology-driven storytelling.</p>
+                    <div class="team-stats">
+                        <div class="team-stat">
+                            <span class="stat-number">15+</span>
+                            <span class="stat-label">Stories</span>
+                        </div>
+                        <div class="team-stat">
+                            <span class="stat-number">50k+</span>
+                            <span class="stat-label">Words</span>
+                        </div>
+                        <div class="team-stat">
+                            <span class="stat-number">5</span>
+                            <span class="stat-label">Genres</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
         <section id="stories">
             <div class="section-header">
                 <h2>Action & Fantasy Stories</h2>
@@ -862,5 +923,16 @@
 </html>
 <script src="script.js"></script>
 <script src="auth.js"></script>
-<script src="stories.js"></script>
-
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const aboutSection = document.getElementById('about');
+    const emojis = ['✨', '🚀', '💻', '📚', '🎮', '🌟', '⚡', '🔥'];
+    
+    for (let i = 0; i < 5; i++) {
+        const floatingElement = document.createElement('div');
+        floatingElement.className = `floating-element floating-${i + 1}`;
+        floatingElement.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        aboutSection.appendChild(floatingElement);
+    }
+});
+</script>
