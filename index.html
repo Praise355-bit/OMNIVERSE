@@ -20,11 +20,19 @@
             <i class="uil uil-bars"></i>
         </button>
         <ul class="nav-links" id="navLinks">
+            <li><a href="#sasuke" class="nav-link">stories</a></li>
             <li><a href="#about" class="nav-link">about</a></li>
             <li><a href="#premium" class="nav-link">Premium</a></li>
             <li><a href="#groups" class="nav-link">groups</a></li>
             <li><a href="#contact" class="nav-link">contact</a></li>
         </ul>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search stories..." id="mainSearchInput">
+            <button class="search-btn" id="mainSearchBtn">
+                <i class="uil uil-search"></i>
+            </button>
+            <div class="search-results" id="searchResults"></div>
+        </div>
     </div>
 </nav>
     <div class="reading-progress" id="readingProgress">
@@ -39,7 +47,6 @@
             </div>
         </div>
     </section>
-</section>
     <div class="container">
         <!-- KNOWLEDGE BASE SECTION -->
         <section id="knowledge" class="knowledge-base">
@@ -232,6 +239,7 @@
                     </ul>
                 </div>
             </div>
+        </section>
             <!-- Update your existing about section with this -->
 <section id="about" class="section">
     <div class="container">
@@ -268,33 +276,6 @@
                 </div>
             </div>
             
-            <!-- Kesther -->
-            <div class="team-card">
-                <div class="team-image">
-                    <img src="kesther.png" alt="Kesther">
-                    <div class="team-badge social-badge">Social Curator</div>
-                </div>
-                <div class="team-info">
-                    <h3>Kesther</h3>
-                    <p class="team-role">Social Media & Community Manager</p>
-                    <p class="team-desc">Connects readers through engaging content and community discussions. Manages our social presence and fosters reader interactions across platforms.</p>
-                    <div class="team-stats">
-                        <div class="team-stat">
-                            <span class="stat-number">4</span>
-                            <span class="stat-label">Groups</span>
-                        </div>
-                        <div class="team-stat">
-                            <span class="stat-number">100+</span>
-                            <span class="stat-label">Members</span>
-                        </div>
-                        <div class="team-stat">
-                            <span class="stat-number">24/7</span>
-                            <span class="stat-label">Active</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
             <!-- Fawaz -->
             <div class="team-card">
                 <div class="team-image">
@@ -302,7 +283,7 @@
                     <div class="team-badge creator-badge">Story Creator</div>
                 </div>
                 <div class="team-info">
-                    <h3>Fawaz</h3>
+                    <h3>Fawaz shittu</h3>
                     <p class="team-role">Lead Story Writer & Creative Director</p>
                     <p class="team-desc">Crafts immersive narratives that transport readers to new worlds. Specializes in fantasy, action, and technology-driven storytelling.</p>
                     <div class="team-stats">
@@ -324,7 +305,7 @@
         </div>
     </div>
 </section>
-        <section id="stories">
+        <section id="sasuke">
             <div class="section-header">
                 <h2>Action & Fantasy Stories</h2>
                 <p class="section-subtitle">Explore our collection of thrilling adventures and magical tales</p>
@@ -731,6 +712,7 @@
             <p>Discuss anime-inspired stories, manga adaptations, and vibrant character arcs.</p>
             <div class="group-meta">
                 <span>Members: many</span>
+            </div>
             <a href="https://chat.whatsapp.com/B80KG3VWHzF6Zz4M8vESk3" target="_blank" class="btn whatsapp-btn">
                 <i class="bx bxl-whatsapp"></i> Join Chat on WhatsApp
             </a>
@@ -907,25 +889,12 @@
             </div>
         </div>
         <div class="footer-legal">
-            <p>&copy; 2025 OMNIVERSE. All rights reserved.</p>
+            <p>&copy; 2026 OMNIVERSE. All rights reserved.</p>
             <p class="powered-by">Powered by Ultracode Foundations</p>
         </div>
     </div>
 </footer>
 </body>
 </html>
-<script src="script.js"></script>
 <script src="auth.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const aboutSection = document.getElementById('about');
-    const emojis = ['✨', '🚀', '💻', '📚', '🎮', '🌟', '⚡', '🔥'];
-    
-    for (let i = 0; i < 5; i++) {
-        const floatingElement = document.createElement('div');
-        floatingElement.className = `floating-element floating-${i + 1}`;
-        floatingElement.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-        aboutSection.appendChild(floatingElement);
-    }
-});
-</script>
+<script src="script.js"></script>
