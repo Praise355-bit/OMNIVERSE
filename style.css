@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
+ @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
 
 :root {
     --primary-color: #FF00FF; /* Neon magenta */
@@ -157,7 +157,7 @@ nav.scrolled {
     display: flex;
     align-items: center;
     position: relative;
-    margin-right: 1rem;
+    margin-left: auto;
 }
 
 .search-input {
@@ -311,8 +311,8 @@ nav.scrolled {
 .hero {
     text-align: center;
     padding: clamp(6rem, 15vw, 10rem) 1rem clamp(4rem, 10vw, 6rem);
-    background: transparent;
-    color: transparent;
+    background: var(--hero-bg);
+    color: var(--text-color);
     margin-bottom: 2rem;
     position: relative;
     overflow: hidden;
@@ -1687,6 +1687,7 @@ section h2::after {
 @media (max-width: 768px) {
     .nav-container {
         flex-wrap: wrap;
+        gap: 0.5rem;
     }
  
     .nav-links {
@@ -1716,9 +1717,11 @@ section h2::after {
     }
  
     .search-container {
+        order: 3;
         margin: 1rem 0;
         width: 100%;
         justify-content: center;
+        flex-basis: 100%;
     }
  
     .hero {
