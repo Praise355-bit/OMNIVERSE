@@ -1,5 +1,4 @@
-    
- const stories = {
+const stories = {
     echo: {
         title: "Echo",
         category: "Premium",
@@ -80,7 +79,7 @@
         <p>Dragged into the conflict, Alex discovered he was a "Null"—a rare individual immune to both light and shadow magic. This made him the ultimate weapon in the shadow war, and both factions would stop at nothing to control him.</p>
         <p>The leader of the Luminai, a woman named Seraphina, revealed that the Nocturni were planning a ritual that would permanently tip the balance toward darkness—an eternal night that would allow their shadow creatures to roam freely.</p>
         <p>But when Alex encountered the Nocturni leader, he learned a different story. Orion claimed that the Luminai sought to create a world of constant daylight that would bleach all color and variation from existence, creating a sterile, controlled reality.</p>
-        <p>Caught between two extremist factions, Alex realized that both were wrong. The true purpose of his bloodline was not to choose a side but to restore balance between light and shadow.</p>
+        <p>Caught between two extremist factions, Alex realized that the true purpose of his bloodline was not to choose a side but to restore balance between light and shadow.</p>
         <p>With the help of a small group of dissenters from both factions who believed in balance, Alex worked to prevent either side from gaining absolute power. This meant sabotaging the Luminai's plans to create a perpetual daylight sphere while also thwarting the Nocturni's eternal night ritual.</p>
         <p>The climax occurred during a solar eclipse—the one time when both light and shadow were perfectly balanced. Both factions planned to use this moment to enact their rituals and permanently shift the balance in their favor.</p>
         <p>Alex and his allies split into two teams to simultaneously disrupt both rituals. The battle took place in two hidden locations beneath the city: the Luminai's Sun Temple and the Nocturni's Shadow Grove.</p>
@@ -432,7 +431,7 @@
         <p>Chapter Extension: Bridging Worlds</p>
         <p>Riley established portals, bringing modern tech to Aetheria and magic to Earth, sparking new adventures and cultural exchanges.</p>
 
-        <p>Chapter 6: Cultural Cultural Fusion</p>
+        <p>Chapter 6: Cultural Fusion</p>
         <p>Conflicts from clashing worlds arose, resolved through innovative solutions.</p>
 
         <p>Chapter 7: Legendary Legacy</p>
@@ -916,9 +915,6 @@ function init() {
     window.addEventListener('offline', () => {
         updateOnlineStatus(false);
     });
-    
-    // Initialize the existing social bar (will be overridden by enhanced version)
-    // Removed: initSocialBar();
 }
 
 // Update user statistics
@@ -959,12 +955,15 @@ function checkOnlineStatus() {
 }
 
 function updateOnlineStatus(online) {
-    if (online) {
-        syncIndicator.classList.remove('offline');
-        syncStatus.textContent = 'Online';
-    } else {
-        syncIndicator.classList.add('offline');
-        syncStatus.textContent = 'Offline';
+    if (syncIndicator) {
+        if (online) {
+            syncIndicator.classList.remove('offline');
+        } else {
+            syncIndicator.classList.add('offline');
+        }
+    }
+    if (syncStatus) {
+        syncStatus.textContent = online ? 'Online' : 'Offline';
     }
 }
 
@@ -1063,7 +1062,7 @@ function setupEventListeners() {
 
     // Close user menu when clicking outside
     document.addEventListener('click', () => {
-        userMenu.classList.remove('active');
+        if (userMenu) userMenu.classList.remove('active');
     });
 
     // Scroll events
@@ -1330,57 +1329,106 @@ function filterStories(category) {
     });
 }
 
-// Search functionality
-function handleSearch() {
-    const query = searchInput.value.toLowerCase().trim();
-    if (!searchResults) return;
-    searchResults.innerHTML = '';
-    if (query.length < 2) {
-        searchResults.style.display = 'none';
+function initializeSearch() {
+    const sInput = document.getElementById('mainSearchInput') || document.querySelector('.search-input');
+    const sBtn = document.getElementById('mainSearchBtn') || document.querySelector('.search-btn');
+    const sResults = document.getElementById('searchResults');
+    
+    if (!sInput || !sBtn || !sResults) {
         return;
     }
-
+    function performSearch() {
+    const query = sInput.value.toLowerCase().trim();
+    sResults.innerHTML = '';
+    
+    if (query.length < 2) {
+        sResults.style.display = 'none';
+        return;
+    }
+    
     let results = [];
     
-    // Loop through all stories (skipping hidden for standard search)
+    // Check for special numeric codes FIRST
+    const specialCodes = {
+        "0122": "illusion",
+        "1000": "cyberdragon", 
+        "1500": "eternalloop",
+        "2000": "story5000",
+        "2500": "story6000",
+        "7000": "story7000",
+        "8000": "Cyber"
+    };
+    
+    // If it's a special code, show ONLY that story (even if hidden)
+    if (specialCodes[query]) {
+        const storyKey = specialCodes[query];
+        if (stories[storyKey]) {
+            results.push({ 
+                title: stories[storyKey].title, 
+                category: stories[storyKey].category, 
+                key: storyKey,
+                isHidden: hiddenKeys.includes(storyKey)
+            });
+            
+            // Display results with this single story
+            if (results.length > 0) {
+                results.forEach(result => {
+                    const item = document.createElement('div');
+                    item.className = 'search-result-item';
+                    if (result.isHidden) {
+                        item.classList.add('hidden-story');
+                    }
+                    item.innerHTML = `
+                        <div>
+                            <div class="search-result-title">
+                                ${result.title}
+                                ${result.isHidden ? '<span class="secret-badge"></span>' : ''}
+                            </div>
+                            <div class="search-result-category">${result.category}</div>
+                        </div>
+                    `;
+                    item.addEventListener('click', () => {
+                        showStory(result.key);
+                        sResults.style.display = 'none';
+                        sInput.value = '';
+                    });
+                    sResults.appendChild(item);
+                });
+                sResults.style.display = 'block';
+                return; // Exit early, no regular search needed
+            }
+        }
+    }
+    
+    // REGULAR SEARCH (exclude hidden stories)
     for (const key in stories) {
-        if (hiddenKeys.includes(key)) continue;
+        // Skip hidden stories for regular search
+        if (hiddenKeys.includes(key)) {
+            continue;
+        }
         
         const story = stories[key];
-        if (story.title.toLowerCase().includes(query) ||
-            story.category.toLowerCase().includes(query) ||
-            (story.content || '').toLowerCase().includes(query)) {
+        const content = story.content.toLowerCase();
+        const title = story.title.toLowerCase();
+        const category = story.category.toLowerCase();
+        
+        if (title.includes(query) || category.includes(query) || content.includes(query)) {
             results.push({
                 title: story.title,
                 category: story.category,
-                key: key
+                key: key,
+                titleMatch: title.includes(query)
             });
         }
     }
 
-    // Special unlocks for hidden stories (all codes included)
-    if (query === "0122") {
-        results.push({ title: stories.illusion.title, category: stories.illusion.category, key: "illusion" });
-    }
-    if (query === "1000") {
-        results.push({ title: stories.cyberdragon.title, category: stories.cyberdragon.category, key: "cyberdragon" });
-    }
-    if (query === "1500") {
-        results.push({ title: stories.eternalloop.title, category: stories.eternalloop.category, key: "eternalloop" });
-    }
-    if (query === "2000") {
-        results.push({ title: stories.story5000.title, category: stories.story5000.category, key: "story5000" });
-    }
-    if (query === "2500") {
-        results.push({ title: stories.story6000.title, category: stories.story6000.category, key: "story6000" });
-    }
-    if (query === "7000") {
-        results.push({ title: stories.story7000.title, category: stories.story7000.category, key: "story7000" });
-    }
-    if (query === "8000") {
-        results.push({ title: stories.Cyber.title, category: stories.Cyber.category, key: "Cyber" });
-    }
-
+    // Sort: title matches first
+    results.sort((a, b) => {
+        if (a.titleMatch && !b.titleMatch) return -1;
+        if (!a.titleMatch && b.titleMatch) return 1;
+        return 0;
+    });
+    
     if (results.length > 0) {
         results.forEach(result => {
             const item = document.createElement('div');
@@ -1391,36 +1439,42 @@ function handleSearch() {
                     <div class="search-result-category">${result.category}</div>
                 </div>
             `;
-            item.onclick = () => {
+            item.addEventListener('click', () => {
                 showStory(result.key);
-                searchResults.style.display = 'none';
-                searchInput.value = '';
-            };
-            searchResults.appendChild(item);
+                sResults.style.display = 'none';
+                sInput.value = '';
+            });
+            sResults.appendChild(item);
         });
-        searchResults.style.display = 'block';
+        sResults.style.display = 'block';
     } else {
-        searchResults.innerHTML = '<div class="no-results">No stories found</div>';
-        searchResults.style.display = 'block';
+        sResults.innerHTML = '<div class="no-results">No stories found</div>';
+        sResults.style.display = 'block';
     }
 }
-
-function initializeSearch() {
-    if (searchInput && searchBtn && searchResults) {
-        searchInput.addEventListener('input', handleSearch);
-        searchBtn.addEventListener('click', handleSearch);
-        
-        // Close search results when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!searchInput.contains(e.target) && 
-                !searchBtn.contains(e.target) && 
-                !searchResults.contains(e.target)) {
-                searchResults.style.display = 'none';
-            }
-        });
-    }
+    // Debounce for smoother typing experience
+    let searchTimeout;
+    sInput.addEventListener('input', () => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(performSearch, 150);
+    });
+    sBtn.addEventListener('click', performSearch);
+    
+    // Handle Enter key
+    sInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            clearTimeout(searchTimeout);
+            performSearch();
+        }
+    });
+    
+    // Close results when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!sInput.contains(e.target) && !sResults.contains(e.target) && !sBtn.contains(e.target)) {
+            sResults.style.display = 'none';
+        }
+    });
 }
-
 // Scroll handlers
 function handleScroll() {
     // Scroll to top button
@@ -1470,7 +1524,7 @@ function closeStoryReader() {
 
 // Text-to-Speech functionality
 function toggleTTS() {
-    if (!'speechSynthesis' in window) {
+    if (!('speechSynthesis' in window)) {
         showNotification('Text-to-Speech not supported in this browser', 'error');
         return;
     }
@@ -1552,1997 +1606,57 @@ function updateMenuStats() {
         if (menuBookmarks) menuBookmarks.textContent = data.stats?.bookmarks || 0;
     }
 }
-// ==================== ENHANCED OMNIVERSE AUTHENTICATION SYSTEM ====================
 
-// Configuration object for better maintainability
-const OMNIVERSE_CONFIG = {
-    storage: {
-        userName: 'omniverse_userName_v2',
-        userType: 'omniverse_userType',
-        firstVisit: 'omniverse_firstVisit_v2',
-        lastVisit: 'omniverse_lastVisit',
-        visitCount: 'omniverse_visitCount',
-        userLevel: 'omniverse_userLevel'
-    },
-    admin: {
-        names: ['praise', 'fawaz', 'marvelous', 'henry',],
-        master: 'praise',
-        experts: ['fawaz', 'marvelous'],
-        privileges: {
-            bypassCooldown: true,
-            accessDebug: true,
-            viewAnalytics: true,
-            viewPeopleOnline: true
-        }
-    },
-    security: {
-        bannedRegex: /(robot|ai|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$|assistant|deepseek|huggingface|openai)/i,
-        minLength: 2,
-        maxLength: 25,
-        maxAttempts: 5,
-        cooldownTime: 30000,
-        adminPassword: '0122'
-    },
-    ui: {
-        theme: 'light',
-        animations: true,
-        sounds: true
-    }
-};
-
-// Enhanced User Class for better user management
-class UserManager {
-    constructor() {
-        this.currentUser = null;
-        this.attempts = 0;
-        this.lastAttempt = 0;
-    }
-
-    validateName(name) {
-        name = name.trim();
-        
-        // Length validation
-        if (name.length < OMNIVERSE_CONFIG.security.minLength || 
-            name.length > OMNIVERSE_CONFIG.security.maxLength) {
-            return {
-                valid: false,
-                message: `Name must be between ${OMNIVERSE_CONFIG.security.minLength} and ${OMNIVERSE_CONFIG.security.maxLength} characters`
-            };
-        }
-
-        // Character validation (only allow letters, numbers, spaces, and basic symbols)
-        if (!/^[a-zA-Z0-9\s\-_.]+$/.test(name)) {
-            return {
-                valid: false,
-                message: 'Name can only contain letters, numbers, spaces, dashes, dots, and underscores'
-            };
-        }
-
-        // Banned name check
-        if (OMNIVERSE_CONFIG.security.bannedRegex.test(name)) {
-            return {
-                valid: false,
-                message: 'Names suggesting AI/robots are not allowed',
-                blocked: true
-            };
-        }
-
-        // Common name detection (optional)
-        const commonNames = ['admin', 'root', 'system', 'user', 'test', 'guest'];
-        if (commonNames.includes(name.toLowerCase())) {
-            return {
-                valid: false,
-                message: 'Please use a more unique name',
-                warning: true
-            };
-        }
-
-        return { valid: true, name: name };
-    }
-
-    saveUser(name, userType = 'user') {
-        const userData = {
-            name: name,
-            type: userType,
-            firstVisit: localStorage.getItem(OMNIVERSE_CONFIG.storage.firstVisit) || new Date().toISOString(),
-            lastVisit: new Date().toISOString(),
-            visitCount: this.getVisitCount() + 1,
-            isAdmin: userType === 'admin' || OMNIVERSE_CONFIG.admin.names.includes(name.toLowerCase()),
-            level: this.calculateUserLevel(name, userType)
-        };
-
-        localStorage.setItem(OMNIVERSE_CONFIG.storage.userName, name);
-        localStorage.setItem(OMNIVERSE_CONFIG.storage.userType, userType);
-        localStorage.setItem(OMNIVERSE_CONFIG.storage.firstVisit, userData.firstVisit);
-        localStorage.setItem(OMNIVERSE_CONFIG.storage.lastVisit, userData.lastVisit);
-        localStorage.setItem(OMNIVERSE_CONFIG.storage.visitCount, userData.visitCount);
-        localStorage.setItem(OMNIVERSE_CONFIG.storage.userLevel, userData.level);
-
-        this.currentUser = userData;
-        return userData;
-    }
-
-    getVisitCount() {
-        return parseInt(localStorage.getItem(OMNIVERSE_CONFIG.storage.visitCount)) || 0;
-    }
-
-    calculateUserLevel(name, userType) {
-        if (userType === 'admin') return 'admin';
-        const isAdmin = OMNIVERSE_CONFIG.admin.names.includes(name.toLowerCase());
-        const visits = this.getVisitCount();
-        
-        if (isAdmin) return 'admin';
-        if (visits > 10) return 'veteran';
-        if (visits > 5) return 'regular';
-        return 'newcomer';
-    }
-
-    clearUser() {
-        localStorage.removeItem(OMNIVERSE_CONFIG.storage.userName);
-        localStorage.removeItem(OMNIVERSE_CONFIG.storage.userType);
-        this.currentUser = null;
-    }
-
-    isRateLimited() {
-        const now = Date.now();
-        if (now - this.lastAttempt < OMNIVERSE_CONFIG.security.cooldownTime) {
-            return true;
-        }
-        this.lastAttempt = now;
-        return false;
-    }
-}
-
-// Enhanced Block Screen with more options
-function blockAccess(reason = 'Unknown violation') {
-    const blockReasons = {
-        'banned_name': 'AI/Robot name detected',
-        'rate_limit': 'Too many attempts',
-        'empty_name': 'Name cannot be empty',
-        'invalid_chars': 'Invalid characters in name'
-    };
-
-    const reasonText = blockReasons[reason] || reason;
-    const contactEmail = 'verseo445@gmail.com';
-    
-    document.body.innerHTML = `
-        <div class="block-screen" style="
-            font-family: 'Poppins', sans-serif; 
-            text-align: center; 
-            padding: 50px; 
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
-            color: #fff; 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 9999;
-        ">
-            <div style="
-                background: rgba(0, 0, 0, 0.7);
-                padding: 40px;
-                border-radius: 20px;
-                border: 2px solid #e74c3c;
-                max-width: 800px;
-                box-shadow: 0 0 50px rgba(231, 76, 60, 0.3);
-            ">
-                <h1 style="
-                    font-size: 4rem; 
-                    color: #e74c3c;
-                    margin-bottom: 20px;
-                    text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
-                ">⛔ ACCESS RESTRICTED</h1>
-                
-                <div style="
-                    background: rgba(231, 76, 60, 0.1);
-                    padding: 20px;
-                    border-radius: 10px;
-                    margin: 20px 0;
-                ">
-                    <h2 style="font-size: 1.8rem; margin: 10px 0;">Reason: ${reasonText}</h2>
-                    <p style="font-size: 1.1rem; opacity: 0.9;">${getBlockMessage(reason)}</p>
-                </div>
-                
-                <div style="margin: 30px 0;">
-                    <p style="font-size: 1rem; color: #00FFFF;">
-                        <strong>ID:</strong> BLK-${Date.now().toString(36).toUpperCase()}
-                    </p>
-                    <p style="margin-top: 10px;">
-                        <strong>Timestamp:</strong> ${new Date().toLocaleString()}
-                    </p>
-                </div>
-                
-                <div style="
-                    background: rgba(0, 255, 255, 0.1);
-                    padding: 20px;
-                    border-radius: 10px;
-                    margin-top: 30px;
-                ">
-                    <p style="font-size: 1.1rem; margin-bottom: 15px;">
-                        If you believe this is a mistake, contact our support team:
-                    </p>
-                    <a href="mailto:${contactEmail}" style="
-                        color: #00FFFF;
-                        text-decoration: none;
-                        font-size: 1.2rem;
-                        padding: 10px 20px;
-                        border: 1px solid #00FFFF;
-                        border-radius: 5px;
-                        display: inline-block;
-                        transition: all 0.3s;
-                    " onmouseover="this.style.backgroundColor='rgba(0,255,255,0.1)'" 
-                       onmouseout="this.style.backgroundColor='transparent'">
-                        📧 Contact Support
-                    </a>
-                </div>
-                
-                <div style="margin-top: 40px; font-size: 0.9rem; opacity: 0.7;">
-                    <p>This site uses advanced detection to prevent automated access.</p>
-                    <p>Human verification required.</p>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.style.overflow = 'hidden';
-    
-    // Log the block attempt
-    console.error(`[OMNIVERSE BLOCK] Reason: ${reasonText} | Time: ${new Date().toISOString()}`);
-    
-    // Prevent any further interaction
-    document.addEventListener('keydown', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-    });
-    
-    throw new Error(`Access blocked: ${reason}`);
-}
-
-function getBlockMessage(reason) {
-    const messages = {
-        'banned_name': 'The name you entered suggests automated or AI origin. Human names only.',
-        'rate_limit': 'Too many failed attempts detected. Please wait and try again.',
-        'empty_name': 'A valid name is required to access this realm.',
-        'invalid_chars': 'Special characters in name are not allowed.'
-    };
-    
-    return messages[reason] || 'Access violation detected. This incident has been logged.';
-}
-
-// Enhanced Authentication Flow
-async function initEnhancedAuth() {
-    const userManager = new UserManager();
-    
-    // Check for existing user
-    let userName = localStorage.getItem(OMNIVERSE_CONFIG.storage.userName);
-    let userType = localStorage.getItem(OMNIVERSE_CONFIG.storage.userType) || 'user';
-    
-    if (userName) {
-        // Returning user flow
-        const userData = userManager.saveUser(userName, userType);
-        showWelcomeBack(userData);
-    } else {
-        // New user flow - ask for user type first
-        await handleNewUser(userManager);
-    }
-    
-    // Make user info globally available
-    window.currentUser = userManager.currentUser;
-    window.userManager = userManager;
-    
-    // Initialize user interface
-    initUserMenu();
-    
-    // Ensure navbar search is visible and wired to existing search
-    ensureNavbarSearch();
-}
-
-async function handleNewUser(userManager) {
-    // First, ask if user wants to sign up as admin or regular user
-    const userType = await askUserType();
-    
-    if (!userType) {
-        // User cancelled, ask again
-        return handleNewUser(userManager);
-    }
-    
-    const maxAttempts = OMNIVERSE_CONFIG.security.maxAttempts;
-    
-    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-        if (attempt > 1) {
-            alert(`Attempt ${attempt} of ${maxAttempts}. Please enter a valid name.`);
-        }
-        
-        const userName = await showNameModal(attempt === 1, userType);
-        
-        if (!userName) {
-            blockAccess('empty_name');
-            return;
-        }
-        
-        const validation = userManager.validateName(userName);
-        
-        if (validation.blocked) {
-            blockAccess('banned_name');
-            return;
-        }
-        
-        if (!validation.valid) {
-            alert(validation.message);
-            continue;
-        }
-        
-        // If admin, verify password
-        if (userType === 'admin') {
-            const passwordCorrect = await verifyAdminPassword();
-            if (!passwordCorrect) {
-                alert('Incorrect admin password. Signing up as regular user instead.');
-                userType = 'user';
-            }
-        }
-        
-        // Success - save user
-        const userData = userManager.saveUser(validation.name, userType);
-        showWelcomeMessage(userData);
-        break;
-    }
-}
-
-function askUserType() {
-    return new Promise((resolve) => {
-        const modal = document.createElement('div');
-        modal.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            backdrop-filter: blur(10px);
-        `;
-        
-        modal.innerHTML = `
-            <div style="
-                background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
-                padding: 40px;
-                border-radius: 20px;
-                border: 3px solid #00FFFF;
-                max-width: 500px;
-                width: 90%;
-                box-shadow: 0 0 50px rgba(0, 255, 255, 0.2);
-                text-align: center;
-            ">
-                <h2 style="color: #00FFFF; margin-bottom: 20px;">
-                    ✨ Welcome to OMNIVERSE ✨
-                </h2>
-                
-                <p style="margin-bottom: 30px; opacity: 0.9;">
-                    How would you like to sign up?
-                </p>
-                
-                <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-                    <button onclick="selectUserType('user')" style="
-                        background: linear-gradient(135deg, #00FFFF, #0088FF);
-                        border: none;
-                        padding: 18px;
-                        border-radius: 12px;
-                        color: #000;
-                        font-weight: bold;
-                        cursor: pointer;
-                        text-align: left;
-                        display: flex;
-                        align-items: center;
-                        gap: 15px;
-                        transition: all 0.3s ease;
-                    " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 10px 20px rgba(0, 255, 255, 0.3)'" 
-                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                        <span style="font-size: 2rem;">👤</span>
-                        <div>
-                            <div style="font-size: 1.2rem;">Regular User</div>
-                            <small style="opacity: 0.8; font-weight: normal;">Read stories, save bookmarks</small>
-                        </div>
-                    </button>
-                    
-                    <button onclick="selectUserType('admin')" style="
-                        background: linear-gradient(135deg, #FFD700, #FF8C00);
-                        border: none;
-                        padding: 18px;
-                        border-radius: 12px;
-                        color: #000;
-                        font-weight: bold;
-                        cursor: pointer;
-                        text-align: left;
-                        display: flex;
-                        align-items: center;
-                        gap: 15px;
-                        transition: all 0.3s ease;
-                    " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 10px 20px rgba(255, 215, 0, 0.3)'" 
-                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                        <span style="font-size: 2rem;">👑</span>
-                        <div>
-                            <div style="font-size: 1.2rem;">Admin User</div>
-                            <small style="opacity: 0.8; font-weight: normal;">Special privileges, password required</small>
-                        </div>
-                    </button>
-                </div>
-                
-                <div style="
-                    background: rgba(0, 136, 255, 0.1);
-                    padding: 15px;
-                    border-radius: 10px;
-                    margin-bottom: 20px;
-                    text-align: left;
-                    font-size: 0.9rem;
-                ">
-                    <strong>Admin Benefits:</strong>
-                    <ul style="margin: 5px 0 0 20px; padding: 0;">
-                        <li>View people online</li>
-                        <li>Access admin panel</li>
-                        <li>System analytics</li>
-                        <li>Priority support</li>
-                    </ul>
-                </div>
-                
-                <button onclick="cancelUserType()" style="
-                    background: rgba(255, 255, 255, 0.1);
-                    border: 1px solid #666;
-                    padding: 12px 30px;
-                    border-radius: 10px;
-                    color: white;
-                    cursor: pointer;
-                    margin-top: 10px;
-                ">
-                    Cancel
-                </button>
-            </div>
-        `;
-        
-        document.body.appendChild(modal);
-        
-        window.selectUserType = (type) => {
-            document.body.removeChild(modal);
-            resolve(type);
-        };
-        
-        window.cancelUserType = () => {
-            document.body.removeChild(modal);
-            resolve(null);
-        };
-    });
-}
-
-function verifyAdminPassword() {
-    return new Promise((resolve) => {
-        const modal = document.createElement('div');
-        modal.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            backdrop-filter: blur(10px);
-        `;
-        
-        modal.innerHTML = `
-            <div style="
-                background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
-                padding: 40px;
-                border-radius: 20px;
-                border: 3px solid #FFD700;
-                max-width: 450px;
-                width: 90%;
-                box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
-                text-align: center;
-            ">
-                <div style="
-                    width: 70px;
-                    height: 70px;
-                    border-radius: 50%;
-                    background: linear-gradient(135deg, #FFD700, #FFA500);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 40px;
-                    margin: 0 auto 20px;
-                    border: 3px solid #FFD700;
-                ">
-                    🔐
-                </div>
-                
-                <h2 style="color: #FFD700; margin-bottom: 10px;">Admin Verification</h2>
-                <p style="margin-bottom: 25px; opacity: 0.9;">
-                    Enter admin password to continue
-                </p>
-                
-                <input type="password" 
-                       id="adminPassword" 
-                       placeholder="Enter admin password" 
-                       style="
-                           width: 100%;
-                           padding: 15px;
-                           background: rgba(255, 255, 255, 0.1);
-                           border: 2px solid #FFD700;
-                           border-radius: 10px;
-                           color: white;
-                           font-size: 1.2rem;
-                           margin-bottom: 20px;
-                           text-align: center;
-                           letter-spacing: 2px;
-                       ">
-                
-                <div style="display: flex; gap: 10px; justify-content: center;">
-                    <button onclick="submitAdminPassword()" style="
-                        background: linear-gradient(135deg, #FFD700, #FF8C00);
-                        border: none;
-                        padding: 12px 30px;
-                        border-radius: 10px;
-                        color: #000;
-                        font-weight: bold;
-                        cursor: pointer;
-                        flex: 1;
-                    ">
-                        Verify
-                    </button>
-                    <button onclick="cancelAdminPassword()" style="
-                        background: rgba(255, 255, 255, 0.1);
-                        border: 1px solid #666;
-                        padding: 12px 30px;
-                        border-radius: 10px;
-                        color: white;
-                        cursor: pointer;
-                    ">
-                        Cancel
-                    </button>
-                </div>
-                
-                <div style="margin-top: 20px; font-size: 0.9rem; opacity: 0.7;">
-                    <p>Contact system admin if you don't have the password</p>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(modal);
-        
-        const input = modal.querySelector('#adminPassword');
-        input.focus();
-        
-        window.submitAdminPassword = () => {
-            const password = input.value.trim();
-            document.body.removeChild(modal);
-            resolve(password === OMNIVERSE_CONFIG.security.adminPassword);
-        };
-        
-        window.cancelAdminPassword = () => {
-            document.body.removeChild(modal);
-            resolve(false);
-        };
-        
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') window.submitAdminPassword();
-        });
-    });
-}
-
-function showNameModal(firstTime = true, userType = 'user') {
-    return new Promise((resolve) => {
-        const modal = document.createElement('div');
-        modal.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            backdrop-filter: blur(10px);
-        `;
-        
-        const isAdmin = userType === 'admin';
-        
-        modal.innerHTML = `
-            <div style="
-                background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
-                padding: 40px;
-                border-radius: 20px;
-                border: 3px solid ${isAdmin ? '#FFD700' : '#00FFFF'};
-                max-width: 500px;
-                width: 90%;
-                box-shadow: 0 0 50px ${isAdmin ? 'rgba(255, 215, 0, 0.3)' : 'rgba(0, 255, 255, 0.2)'};
-                text-align: center;
-            ">
-                <h2 style="color: ${isAdmin ? '#FFD700' : '#00FFFF'}; margin-bottom: 20px;">
-                    ${isAdmin ? '👑 Admin Registration 👑' : '✨ Create Your Account ✨'}
-                </h2>
-                
-                <p style="margin-bottom: 30px; opacity: 0.9;">
-                    ${firstTime ? 
-                        'Enter your display name. This helps maintain a human-only community.' : 
-                        'Please enter a valid name to continue.'
-                    }
-                </p>
-                
-                <input type="text" 
-                       id="nameInput" 
-                       placeholder="Enter your display name" 
-                       maxlength="${OMNIVERSE_CONFIG.security.maxLength}"
-                       style="
-                           width: 100%;
-                           padding: 15px;
-                           background: rgba(255, 255, 255, 0.1);
-                           border: 2px solid ${isAdmin ? '#FFD700' : '#0088FF'};
-                           border-radius: 10px;
-                           color: white;
-                           font-size: 1.1rem;
-                           margin-bottom: 20px;
-                       ">
-                
-                <div style="
-                    background: ${isAdmin ? 'rgba(255, 215, 0, 0.1)' : 'rgba(0, 136, 255, 0.1)'};
-                    padding: 15px;
-                    border-radius: 10px;
-                    margin-bottom: 20px;
-                    text-align: left;
-                    font-size: 0.9rem;
-                ">
-                    <strong>Requirements:</strong>
-                    <ul style="margin: 5px 0 0 20px; padding: 0;">
-                        <li>${OMNIVERSE_CONFIG.security.minLength}-${OMNIVERSE_CONFIG.security.maxLength} characters</li>
-                        <li>Letters, numbers, spaces, dashes, dots only</li>
-                        <li>No AI/robot related names</li>
-                    </ul>
-                    ${isAdmin ? '<div style="margin-top: 10px; color: #FFD700; font-weight: bold;">Admin privileges will be activated upon verification</div>' : ''}
-                </div>
-                
-                <div style="display: flex; gap: 10px; justify-content: center;">
-                    <button onclick="submitName()" style="
-                        background: linear-gradient(135deg, ${isAdmin ? '#FFD700, #FF8C00' : '#00FFFF, #0088FF'});
-                        border: none;
-                        padding: 12px 30px;
-                        border-radius: 10px;
-                        color: ${isAdmin ? '#000' : '#000'};
-                        font-weight: bold;
-                        cursor: pointer;
-                        flex: 1;
-                    ">
-                        Continue
-                    </button>
-                    ${!firstTime ? `
-                    <button onclick="cancelName()" style="
-                        background: rgba(255, 255, 255, 0.1);
-                        border: 1px solid #666;
-                        padding: 12px 30px;
-                        border-radius: 10px;
-                        color: white;
-                        cursor: pointer;
-                    ">
-                        Cancel
-                    </button>` : ''}
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(modal);
-        
-        const input = modal.querySelector('#nameInput');
-        input.focus();
-        
-        window.submitName = () => {
-            const name = input.value.trim();
-            document.body.removeChild(modal);
-            resolve(name);
-        };
-        
-        window.cancelName = () => {
-            document.body.removeChild(modal);
-            resolve(null);
-        };
-        
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') window.submitName();
-        });
-    });
-}
-
-function showWelcomeMessage(userData) {
-    const message = userData.isAdmin ? 
-        `🔥 ADMIN ACCESS GRANTED 🔥\nWelcome, Admin ${userData.name}! The realm awaits your command. 👑\n\nPassword: 0122` :
-        `🎉 Welcome to OMNIVERSE, ${userData.name}! ✨\nEnjoy exploring the stories! 📖\n\nYou are a ${userData.level}.`;
-    
-    // Fancy notification
-    showOmniverseNotification(message, userData.isAdmin ? 'admin' : 'welcome');
-}
-
-function showWelcomeBack(userData) {
-    const messages = {
-        admin: `👑 Welcome back, Admin ${userData.name}! happy 2026\nSession ${userData.visitCount} initialized. 🔥`,
-        veteran: `🌟 Welcome back, ${userData.name}! happy 2026 \nGood to see you again (visit #${userData.visitCount}).`,
-        regular: `👋 Welcome back, ${userData.name}! happy 2026\nContinue your journey (visit #${userData.visitCount}).`,
-        newcomer: `🚀 Welcome back, ${userData.name}! happy 2026\nNice to see you again!`
-    };
-    
-    const message = userData.isAdmin ? messages.admin : messages[userData.level];
-    showOmniverseNotification(message, userData.isAdmin ? 'admin' : 'info');
-}
-
-function showOmniverseNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    const colors = {
-        admin: { bg: 'linear-gradient(135deg, #FFD700, #FF8C00)', color: '#000' },
-        welcome: { bg: 'linear-gradient(135deg, #00FFFF, #0088FF)', color: '#000' },
-        info: { bg: 'rgba(0, 255, 255, 0.2)', color: '#00FFFF' }
-    };
-    
-    const style = colors[type] || colors.info;
-    
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: ${style.bg};
-        color: ${style.color};
-        padding: 15px 25px;
-        border-radius: 10px;
-        z-index: 1001;
-        font-weight: bold;
-        text-align: center;
-        min-width: 300px;
-        max-width: 500px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-        animation: slideDown 0.3s ease-out;
-        backdrop-filter: blur(10px);
-        border: 1px solid ${type === 'admin' ? '#FFD700' : '#00FFFF'};
-    `;
-    
-    notification.innerHTML = message.replace(/\n/g, '<br>');
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.style.opacity = '0';
-        notification.style.transform = 'translateX(-50%) translateY(-20px)';
-        setTimeout(() => document.body.removeChild(notification), 300);
-    }, 3000);
-}
-
-// User Menu System
-function initUserMenu() {
-    const menu = document.createElement('div');
-    menu.id = 'userMenu';
-    menu.style.cssText = `
-        position: fixed;
-        top: 70px;
-        right: 20px;
-        background: rgba(0, 0, 0, 0.95);
-        border: 1px solid #00FFFF;
-        border-radius: 10px;
-        padding: 15px;
-        min-width: 200px;
-        z-index: 1001;
-        display: none;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 5px 30px rgba(0, 255, 255, 0.2);
-    `;
-    
-    document.body.appendChild(menu);
-    
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('#userGreeting') && !e.target.closest('#userMenu')) {
-            menu.style.display = 'none';
-        }
-    });
-}
-
-function showUserMenu() {
-    const menu = document.getElementById('userMenu');
-    const userName = localStorage.getItem(OMNIVERSE_CONFIG.storage.userName);
-    const userType = localStorage.getItem(OMNIVERSE_CONFIG.storage.userType) || 'user';
-    const isAdmin = userType === 'admin' || (userName && OMNIVERSE_CONFIG.admin.names.includes(userName.toLowerCase()));
-    const isMaster = userName && userName.toLowerCase() === OMNIVERSE_CONFIG.admin.master;
-    
-    menu.innerHTML = `
-        <div style="margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;">
-            <strong>${isAdmin ? '👑 Admin Menu' : '👤 User Menu'}</strong>
-            ${isAdmin ? '<div style="font-size: 0.8rem; color: #FFD700;">Admin privileges active</div>' : ''}
-        </div>
-        
-        <button onclick="changeUserAccount()" style="
-            width: 100%;
-            background: rgba(0, 136, 255, 0.2);
-            border: 1px solid #0088FF;
-            color: #00FFFF;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        ">
-            <span>🔄</span> Switch Account Type
-        </button>
-        
-        <button onclick="changeUserName()" style="
-            width: 100%;
-            background: rgba(0, 136, 255, 0.2);
-            border: 1px solid #0088FF;
-            color: #00FFFF;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        ">
-            <span>✏️</span> Change Name
-        </button>
-        
-        <button onclick="showUserStats()" style="
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid #666;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        ">
-            <span>📊</span> View Stats
-        </button>
-        
-        ${isAdmin ? `
-        <button onclick="showAdminPanel()" style="
-            width: 100%;
-            background: rgba(255, 215, 0, 0.2);
-            border: 1px solid #FFD700;
-            color: #FFD700;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        ">
-            <span>👑</span> Admin Panel
-        </button>` : ''}
-        
-        ${isAdmin ? `
-        <button onclick="showPeopleOnline()" style="
-            width: 100%;
-            background: rgba(0, 255, 255, 0.06);
-            border: 1px solid #00FFFF;
-            color: #00FFFF;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        ">
-            <span>👥</span> View People Online
-        </button>` : ''}
-        
-        <button onclick="logoutUser()" style="
-            width: 100%;
-            background: rgba(231, 76, 60, 0.2);
-            border: 1px solid #e74c3c;
-            color: #e74c3c;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: left;
-            margin-top: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        ">
-            <span>🚪</span> Logout
-        </button>
-    `;
-    
-    menu.style.display = 'block';
-}
-
-// User Actions
-function changeUserAccount() {
-    document.getElementById('userMenu').style.display = 'none';
-    
-    // Clear current user and restart auth flow
-    localStorage.removeItem(OMNIVERSE_CONFIG.storage.userName);
-    localStorage.removeItem(OMNIVERSE_CONFIG.storage.userType);
-    initEnhancedAuth();
-}
-
-function changeUserName() {
-    document.getElementById('userMenu').style.display = 'none';
-    localStorage.removeItem(OMNIVERSE_CONFIG.storage.userName);
-    initEnhancedAuth();
-}
-
-function showUserStats() {
-    document.getElementById('userMenu').style.display = 'none';
-    
-    const stats = {
-        name: localStorage.getItem(OMNIVERSE_CONFIG.storage.userName),
-        type: localStorage.getItem(OMNIVERSE_CONFIG.storage.userType) || 'user',
-        firstVisit: localStorage.getItem(OMNIVERSE_CONFIG.storage.firstVisit),
-        lastVisit: localStorage.getItem(OMNIVERSE_CONFIG.storage.lastVisit),
-        visits: localStorage.getItem(OMNIVERSE_CONFIG.storage.visitCount),
-        level: localStorage.getItem(OMNIVERSE_CONFIG.storage.userLevel)
-    };
-    
-    alert(`
-        👤 User Statistics:
-        
-        Name: ${stats.name}
-        Account Type: ${stats.type === 'admin' ? '👑 Admin' : '👤 User'}
-        Level: ${stats.level}
-        Total Visits: ${stats.visits}
-        First Visit: ${stats.firstVisit ? new Date(stats.firstVisit).toLocaleDateString() : 'N/A'}
-        Last Visit: ${stats.lastVisit ? new Date(stats.lastVisit).toLocaleDateString() : 'N/A'}
-        
-        Keep exploring! 🚀
-    `);
-}
-
-function showAdminPanel() {
-    document.getElementById('userMenu').style.display = 'none';
-    
-    const userName = localStorage.getItem(OMNIVERSE_CONFIG.storage.userName) || 'Unknown';
-    const userType = localStorage.getItem(OMNIVERSE_CONFIG.storage.userType) || 'user';
-    const isMaster = userName.toLowerCase() === OMNIVERSE_CONFIG.admin.master;
-    
-    // In a real implementation, this would open an admin dashboard
-    alert(`
-        👑 ADMIN PANEL (${userType === 'admin' ? 'PASSWORD VERIFIED' : 'SYSTEM ADMIN'}: ${userName})
-        
-        [System Status]
-        • Users online: ${Math.floor(Math.random() * 100) + 1}
-        • Stories loaded: ${document.querySelectorAll('.card').length}
-        • Security: Active
-        • Admin password: 0122
-        
-        [Quick Actions]
-        1. View all users
-        2. Manage stories
-        3. Security logs
-        4. System settings
-        5. Change admin password
-        
-        Use Ctrl+Shift+A for advanced panel.
-    `);
-}
-
-function logoutUser() {
-    if (confirm('Are you sure you want to logout?')) {
-        localStorage.removeItem(OMNIVERSE_CONFIG.storage.userName);
-        localStorage.removeItem(OMNIVERSE_CONFIG.storage.userType);
-        document.getElementById('userMenu').style.display = 'none';
-        showOmniverseNotification('Logged out successfully. Refresh to continue.', 'info');
-        setTimeout(() => location.reload(), 2000);
-    }
-}
-
-// Show people online (admin only)
-function getPeopleOnline() {
-    // Simulated online users list. In a real app this would call a server.
-    return [
-        { name: 'Ariadne', type: 'user', lastActive: Date.now() - 120000 },
-        { name: 'Juno', type: 'user', lastActive: Date.now() - 45000 },
-        { name: 'Kaito', type: 'admin', lastActive: Date.now() - 30000 },
-        { name: 'Lena', type: 'user', lastActive: Date.now() - 600000 },
-        { name: localStorage.getItem(OMNIVERSE_CONFIG.storage.userName) || 'You', 
-          type: localStorage.getItem(OMNIVERSE_CONFIG.storage.userType) || 'user', 
-          lastActive: Date.now() - 5000 }
-    ];
-}
-
-function showPeopleOnline() {
-    const userName = localStorage.getItem(OMNIVERSE_CONFIG.storage.userName);
-    const userType = localStorage.getItem(OMNIVERSE_CONFIG.storage.userType) || 'user';
-    
-    if (!userName || (userType !== 'admin' && !OMNIVERSE_CONFIG.admin.names.includes(userName.toLowerCase()))) {
-        showOmniverseNotification('Access denied: Admin privileges required', 'error');
-        return;
-    }
-
-    const list = getPeopleOnline();
-    const isMaster = userName.toLowerCase() === OMNIVERSE_CONFIG.admin.master;
-
-    const modal = document.createElement('div');
-    modal.style.cssText = `
-        position: fixed;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(0,0,0,0.6);
-        z-index: 20000;
-        padding: 20px;
-    `;
-    modal.innerHTML = `
-        <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; width: 100%; max-width: 600px; color: var(--text-color);">
-            <h3 style="margin-top:0; color: #FFD700; display: flex; align-items: center; gap: 10px;">
-                <span>👥</span> People Online ${isMaster ? ' (Master View)' : ''}
-            </h3>
-            <div style="max-height: 400px; overflow:auto; margin-bottom: 12px;">
-                ${list.map(u => `<div style="padding:8px;border-bottom:1px solid rgba(255,255,255,0.03); display: flex; align-items: center; gap: 10px;">
-                    ${u.type === 'admin' ? '<span style="color: #FFD700; font-weight: bold;">👑</span>' : '<span>👤</span>'}
-                    <div>
-                        <strong style="color: ${u.type === 'admin' ? '#FFD700' : 'var(--text-color)'}">${u.name}</strong>
-                        <div style="font-size:0.85rem; color:var(--light-text);">${u.type === 'admin' ? 'Admin' : 'User'} • Last active: ${new Date(u.lastActive).toLocaleTimeString()}</div>
-                    </div>
-                </div>`).join('')}
-            </div>
-            <div style="display:flex; gap:8px; justify-content:flex-end;">
-                ${isMaster ? `<button id="refreshOnline" style="padding:8px 12px; background:#FFD700; color: #000; border:none; border-radius:6px; cursor:pointer; font-weight: bold;">Refresh</button>` : ''}
-                <button id="closeOnline" style="padding:8px 12px; background:rgba(255,255,255,0.08); border:none; border-radius:6px; cursor:pointer;">Close</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-
-    modal.querySelector('#closeOnline').addEventListener('click', () => {
-        document.body.removeChild(modal);
-    });
-    const refreshBtn = modal.querySelector('#refreshOnline');
-    if (refreshBtn) {
-        refreshBtn.addEventListener('click', () => {
-            // simulate refresh
-            const refreshed = getPeopleOnline().map(u => ({ ...u, lastActive: Date.now() - Math.floor(Math.random()*600000) }));
-            const container = modal.querySelector('div[style*="max-height"]');
-            container.innerHTML = refreshed.map(u => `<div style="padding:8px;border-bottom:1px solid rgba(255,255,255,0.03); display: flex; align-items: center; gap: 10px;">
-                ${u.type === 'admin' ? '<span style="color: #FFD700; font-weight: bold;">👑</span>' : '<span>👤</span>'}
-                <div>
-                    <strong style="color: ${u.type === 'admin' ? '#FFD700' : 'var(--text-color)'}">${u.name}</strong>
-                    <div style="font-size:0.85rem; color:var(--light-text);">${u.type === 'admin' ? 'Admin' : 'User'} • Last active: ${new Date(u.lastActive).toLocaleTimeString()}</div>
-                </div>
-            </div>`).join('');
-        });
-    }
-}
-
-// Enhanced Keyboard Shortcuts
-function initEnhancedShortcuts() {
-    document.addEventListener('keydown', function(e) {
-        // Ctrl+Shift+R - Reset everything
-        if (e.ctrlKey && e.shiftKey && e.key === 'R') {
-            e.preventDefault();
-            if (confirm('⚠️ WARNING: This will reset ALL OMNIVERSE data!\nAre you absolutely sure?')) {
-                localStorage.clear();
-                sessionStorage.clear();
-                showOmniverseNotification('All data cleared. Reloading...', 'info');
-                setTimeout(() => location.reload(), 1000);
-            }
-        }
-        
-        // Ctrl+Shift+D - Debug info
-        if (e.ctrlKey && e.shiftKey && e.key === 'D') {
-            e.preventDefault();
-            console.log('[OMNIVERSE DEBUG]', {
-                user: window.currentUser,
-                config: OMNIVERSE_CONFIG,
-                localStorage: { ...localStorage },
-                timestamp: new Date().toISOString()
-            });
-            showOmniverseNotification('Debug info logged to console', 'info');
-        }
-        
-        // Ctrl+Shift+M - Toggle menu
-        if (e.ctrlKey && e.shiftKey && e.key === 'M') {
-            e.preventDefault();
-            const menu = document.getElementById('userMenu');
-            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-        }
-        
-        // Ctrl+Shift+A - Admin panel shortcut
-        if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-            e.preventDefault();
-            const userName = localStorage.getItem(OMNIVERSE_CONFIG.storage.userName);
-            const userType = localStorage.getItem(OMNIVERSE_CONFIG.storage.userType);
-            if (userType === 'admin' || (userName && OMNIVERSE_CONFIG.admin.names.includes(userName.toLowerCase()))) {
-                showAdminPanel();
-            } else {
-                showOmniverseNotification('Admin privileges required', 'error');
-            }
-        }
-        
-        // Escape - Close menu
-        if (e.key === 'Escape') {
-            const menu = document.getElementById('userMenu');
-            if (menu) menu.style.display = 'none';
-        }
-    });
-}
-
-// Ensure navbar search shows and uses existing handleSearch
-function ensureNavbarSearch() {
-    // Make sure the search-container in the navbar is visible and wired
-    const navSearchContainer = document.querySelector('nav .search-container');
-    if (navSearchContainer) {
-        navSearchContainer.style.display = 'flex';
-        // wire to existing search input/handlers if present
-        const input = navSearchContainer.querySelector('.search-input');
-        const btn = navSearchContainer.querySelector('.search-btn');
-        if (input && btn) {
-            input.addEventListener('input', handleSearch);
-            btn.addEventListener('click', handleSearch);
-        } else {
-            // create fallback
-            const searchInput = document.createElement('input');
-            searchInput.className = 'search-input';
-            searchInput.placeholder = 'Search stories...';
-            searchInput.style.marginRight = '8px';
-            const searchBtn = document.createElement('button');
-            searchBtn.className = 'search-btn';
-            searchBtn.innerHTML = '<i class="uil uil-search"></i>';
-            navSearchContainer.appendChild(searchInput);
-            navSearchContainer.appendChild(searchBtn);
-            searchInput.addEventListener('input', handleSearch);
-            searchBtn.addEventListener('click', handleSearch);
-        }
-    } else {
-        // If navbar has no container, inject a small search field into nav
-        const navbarEl = document.getElementById('navbar');
-        if (navbarEl) {
-            const container = document.createElement('div');
-            container.className = 'search-container';
-            container.style.marginLeft = '16px';
-            container.innerHTML = `<input class="search-input" placeholder="Search stories..." style="padding:6px 10px;border-radius:20px;border:1px solid rgba(0,191,255,0.2);">
-                                   <button class="search-btn" style="margin-left:6px;"><i class="uil uil-search"></i></button>
-                                   <div class="search-results" id="searchResultsNav" style="display:none;position:absolute;z-index:1002;"></div>`;
-            navbarEl.querySelector('.nav-container')?.appendChild(container);
-            const input = container.querySelector('.search-input');
-            const btn = container.querySelector('.search-btn');
-            input.addEventListener('input', handleSearch);
-            btn.addEventListener('click', handleSearch);
-        }
-    }
-}
-
-// Main initialization
-function initOmniverseAuth() {
-    // Add CSS for animations
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideDown {
-            from { transform: translateX(-50%) translateY(-30px); opacity: 0; }
-            to { transform: translateX(-50%) translateY(0); opacity: 1; }
-        }
-        
-        .admin-badge {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 215, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
-        }
-    `;
-    document.head.appendChild(style);
-    
-    // Initialize systems
-    initEnhancedAuth();
-    initEnhancedShortcuts();
-    
-    // Export to global scope
-    window.OMNIVERSE = {
-        ...window.OMNIVERSE,
-        config: OMNIVERSE_CONFIG,
-        user: window.currentUser,
-        auth: {
-            login: initEnhancedAuth,
-            logout: logoutUser,
-            changeName: changeUserName,
-            switchAccount: changeUserAccount
-        },
-        utils: {
-            showNotification: showOmniverseNotification,
-            showStats: showUserStats,
-            viewPeopleOnline: showPeopleOnline
-        }
-    };
-    
-    console.log('🚀 OMNIVERSE v2.0 Authentication initialized');
-}
-
-// ==================== INTEGRATION WITH EXISTING CODE ====================
-
-// Replace the existing init() function with an integrated version
-function init() {
-    // Initialize OMNIVERSE authentication system first
-    initOmniverseAuth();
-    
-    // Then initialize the existing story system
-    updateUserStats();
-    setupEventListeners();
-    applySavedSettings();
-    updateBookmarksSection();
-    checkOnlineStatus();
-    updateStorageInfo();
-    setupAuthentication();
-    initializeSearch();
-    
-    // Listen for online/offline status changes
-    window.addEventListener('online', () => {
-        updateOnlineStatus(true);
-        syncOfflineStories();
-    });
-    window.addEventListener('offline', () => {
-        updateOnlineStatus(false);
-    });
-}
-
-// Update the existing setupAuthentication to work with the new system
+// Authentication functions (simplified without OMNIVERSE)
 function setupAuthentication() {
-    // Check if user is already signed in via the new system
-    const userName = localStorage.getItem(OMNIVERSE_CONFIG.storage.userName);
-    const userType = localStorage.getItem(OMNIVERSE_CONFIG.storage.userType) || 'user';
-    
-    if (userName) {
-        // Use the new system's user data
-        currentUser = {
-            id: userName,
-            name: userName,
-            type: userType,
-            isAdmin: userType === 'admin' || OMNIVERSE_CONFIG.admin.names.includes(userName.toLowerCase())
-        };
+    // Simple authentication check
+    const savedUser = localStorage.getItem('currentUser');
+    if (savedUser) {
+        currentUser = JSON.parse(savedUser);
         updateUserUI(currentUser);
-        loadUserData(userName);
+    }
+}
+
+function handleSignOut() {
+    currentUser = null;
+    localStorage.removeItem('currentUser');
+    updateUserUI(null);
+    showNotification('Signed out successfully');
+}
+
+function updateUserUI(user) {
+    if (user) {
+        // Show user is logged in
+        if (userName) userName.textContent = user.name;
+        if (userEmail) userEmail.textContent = user.email;
+        if (signInBtn) signInBtn.style.display = 'none';
+        if (signOutBtn) signOutBtn.style.display = 'block';
+        if (userAvatar) userAvatar.style.display = 'flex';
     } else {
-        updateUserUI(null);
+        // Show user is logged out
+        if (signInBtn) signInBtn.style.display = 'block';
+        if (signOutBtn) signOutBtn.style.display = 'none';
+        if (userAvatar) userAvatar.style.display = 'none';
     }
 }
 
-// Update the existing showNotification to not conflict with the new system
-function showNotification(message, type = 'success') {
-    // If there's already an OMNIVERSE notification system, use a different style
-    const existingNotification = document.querySelector('.notification:not(.omniverse)');
-    if (existingNotification) {
-        existingNotification.remove();
+function saveUserData() {
+    if (!currentUser) return;
+    if (!userData[currentUser.id]) {
+        userData[currentUser.id] = { stats: userStats };
+    } else {
+        userData[currentUser.id].stats = userStats;
     }
-    
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.innerHTML = `
-        <div class="notification-content">
-            <i class="uil uil-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
-            <span>${message}</span>
-        </div>
-    `;
-    document.body.appendChild(notification);
-    
-    // Animate in
-    setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-    }, 100);
-    
-    // Auto remove after 3 seconds
-    setTimeout(() => {
-        notification.style.transform = 'translateX(400px)';
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.remove();
-            }
-        }, 300);
-    }, 3000);
+    localStorage.setItem('userData', JSON.stringify(userData));
 }
 
-// Comprehensive User Profile Modal with All Menu Options
-function showUserProfile() {
-    const userName = localStorage.getItem(OMNIVERSE_CONFIG.storage.userName);
-    
-    if (!userName) {
-        showGuestMenu();
-        return;
-    }
-    
-    const userType = localStorage.getItem(OMNIVERSE_CONFIG.storage.userType) || 'user';
-    const isAdmin = userType === 'admin' || OMNIVERSE_CONFIG.admin.names.includes(userName.toLowerCase());
-    const isMaster = userName.toLowerCase() === OMNIVERSE_CONFIG.admin.master;
-    const visitCount = parseInt(localStorage.getItem(OMNIVERSE_CONFIG.storage.visitCount)) || 1;
-    const userLevel = localStorage.getItem(OMNIVERSE_CONFIG.storage.userLevel) || 'newcomer';
-    const firstVisit = localStorage.getItem(OMNIVERSE_CONFIG.storage.firstVisit);
-    const lastVisit = localStorage.getItem(OMNIVERSE_CONFIG.storage.lastVisit);
-    
-    const modal = document.createElement('div');
-    modal.id = 'userProfileModal';
-    modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.85);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1002;
-        backdrop-filter: blur(10px);
-        padding: 20px;
-    `;
-    
-    modal.innerHTML = `
-        <div style="
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
-            border-radius: 20px;
-            border: 3px solid ${isAdmin ? (isMaster ? '#FFD700' : '#FFD700') : '#00FFFF'};
-            color: white;
-            width: 100%;
-            max-width: 800px;
-            max-height: 90vh;
-            overflow: hidden;
-            box-shadow: 0 0 60px ${isAdmin ? (isMaster ? 'rgba(255, 215, 0, 0.4)' : 'rgba(255, 215, 0, 0.3)') : 'rgba(0, 255, 255, 0.3)'};
-            display: flex;
-            flex-direction: column;
-        ">
-            <!-- Header -->
-            <div style="
-                padding: 25px;
-                background: rgba(0, 0, 0, 0.3);
-                border-bottom: 1px solid rgba(255,255,255,0.1);
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            ">
-                <div style="display: flex; align-items: center; gap: 20px;">
-                    <div style="
-                        width: 70px;
-                        height: 70px;
-                        border-radius: 50%;
-                        background: ${isAdmin ? (isMaster ? 'linear-gradient(135deg, #FFD700, #FFA500)' : 'linear-gradient(135deg, #FFD700, #FFA500)') : 'linear-gradient(135deg, #00FFFF, #0088FF)'};
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-weight: bold;
-                        color: #000;
-                        font-size: 28px;
-                        border: 3px solid ${isAdmin ? (isMaster ? '#FFD700' : '#FFD700') : '#00FFFF'};
-                    ">
-                        ${userName.charAt(0).toUpperCase()}
-                    </div>
-                    <div>
-                        <h2 style="margin: 0 0 5px 0; font-size: 1.8rem;">${userName}</h2>
-                        <div style="display: flex; gap: 10px; align-items: center;">
-                            ${isAdmin ? `<span style="background: #FFD700; color: #000; padding: 4px 12px; border-radius: 12px; font-size: 0.9rem; font-weight: bold;">${isMaster ? '👑 MASTER ADMIN' : '👑 ADMIN'}</span>` : ''}
-                            <span style="background: #333; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 0.9rem;">
-                                ${userLevel.toUpperCase()}
-                            </span>
-                            <span style="opacity: 0.7; font-size: 0.9rem;">Visit #${visitCount}</span>
-                        </div>
-                    </div>
-                </div>
-                <button onclick="closeProfileModal()" style="
-                    background: none;
-                    border: none;
-                    color: #fff;
-                    font-size: 2rem;
-                    cursor: pointer;
-                    opacity: 0.7;
-                    padding: 10px;
-                    line-height: 1;
-                ">&times;</button>
-            </div>
-            
-            <!-- Content Area -->
-            <div style="padding: 25px; overflow-y: auto; flex: 1;">
-                <!-- Quick Stats -->
-                <div style="margin-bottom: 30px;">
-                    <h3 style="color: #00FFFF; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                        <span>📊</span> Quick Stats
-                    </h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
-                        <div style="background: rgba(0, 255, 255, 0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(0, 255, 255, 0.2);">
-                            <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 5px;">Account Type</div>
-                            <div style="font-weight: bold; font-size: 1.1rem; color: ${isAdmin ? '#FFD700' : '#00FFFF'};">${isAdmin ? '👑 Admin' : '👤 User'}</div>
-                        </div>
-                        <div style="background: rgba(0, 255, 255, 0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(0, 255, 255, 0.2);">
-                            <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 5px;">First Visit</div>
-                            <div style="font-weight: bold; font-size: 1.1rem;">${firstVisit ? new Date(firstVisit).toLocaleDateString() : 'N/A'}</div>
-                        </div>
-                        <div style="background: rgba(0, 255, 255, 0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(0, 255, 255, 0.2);">
-                            <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 5px;">Last Visit</div>
-                            <div style="font-weight: bold; font-size: 1.1rem;">${lastVisit ? new Date(lastVisit).toLocaleDateString() : 'N/A'}</div>
-                        </div>
-                        <div style="background: rgba(0, 255, 255, 0.1); padding: 15px; border-radius: 10px; border: 1px solid rgba(0, 255, 255, 0.2);">
-                            <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 5px;">Total Visits</div>
-                            <div style="font-weight: bold; font-size: 1.1rem;">${visitCount}</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- User Actions -->
-                <div style="margin-bottom: 30px;">
-                    <h3 style="color: #00FFFF; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                        <span>⚡</span> Quick Actions
-                    </h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                        <button onclick="changeUserAccount(); closeProfileModal();" style="
-                            background: linear-gradient(135deg, #0088FF, #0055AA);
-                            border: none;
-                            color: white;
-                            padding: 18px;
-                            border-radius: 12px;
-                            cursor: pointer;
-                            font-weight: bold;
-                            font-size: 1rem;
-                            text-align: left;
-                            display: flex;
-                            align-items: center;
-                            gap: 15px;
-                            transition: all 0.3s;
-                        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 20px rgba(0, 136, 255, 0.3)'" 
-                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                            <span style="font-size: 1.5rem;">🔄</span>
-                            <div>
-                                <div>Switch Account Type</div>
-                                <small style="opacity: 0.8; font-weight: normal; font-size: 0.9rem;">Change to admin/user</small>
-                            </div>
-                        </button>
-                        
-                        <button onclick="showDetailedStats(); closeProfileModal();" style="
-                            background: linear-gradient(135deg, #00CC88, #008855);
-                            border: none;
-                            color: white;
-                            padding: 18px;
-                            border-radius: 12px;
-                            cursor: pointer;
-                            font-weight: bold;
-                            font-size: 1rem;
-                            text-align: left;
-                            display: flex;
-                            align-items: center;
-                            gap: 15px;
-                            transition: all 0.3s;
-                        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 20px rgba(0, 204, 136, 0.3)'" 
-                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                            <span style="font-size: 1.5rem;">📈</span>
-                            <div>
-                                <div>View Detailed Stats</div>
-                                <small style="opacity: 0.8; font-weight: normal; font-size: 0.9rem;">Complete analytics</small>
-                            </div>
-                        </button>
-                        
-                        ${isAdmin ? `
-                        <button onclick="showAdminPanel(); closeProfileModal();" style="
-                            background: linear-gradient(135deg, #FFD700, #FF8C00);
-                            border: none;
-                            color: #000;
-                            padding: 18px;
-                            border-radius: 12px;
-                            cursor: pointer;
-                            font-weight: bold;
-                            font-size: 1rem;
-                            text-align: left;
-                            display: flex;
-                            align-items: center;
-                            gap: 15px;
-                            transition: all 0.3s;
-                        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 20px rgba(255, 215, 0, 0.3)'" 
-                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                            <span style="font-size: 1.5rem;">👑</span>
-                            <div>
-                                <div>Admin Panel</div>
-                                <small style="opacity: 0.8; font-weight: normal; font-size: 0.9rem;">System management</small>
-                            </div>
-                        </button>
-                        
-                        <button onclick="showPeopleOnline(); closeProfileModal();" style="
-                            background: linear-gradient(135deg, #AA00FF, #7700AA);
-                            border: none;
-                            color: white;
-                            padding: 18px;
-                            border-radius: 12px;
-                            cursor: pointer;
-                            font-weight: bold;
-                            font-size: 1rem;
-                            text-align: left;
-                            display: flex;
-                            align-items: center;
-                            gap: 15px;
-                            transition: all 0.3s;
-                        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 20px rgba(170, 0, 255, 0.3)'" 
-                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                            <span style="font-size: 1.5rem;">👥</span>
-                            <div>
-                                <div>People Online</div>
-                                <small style="opacity: 0.8; font-weight: normal; font-size: 0.9rem;">View active users</small>
-                            </div>
-                        </button>` : ''}
-                        
-                        <button onclick="showSettings(); closeProfileModal();" style="
-                            background: linear-gradient(135deg, #666, #333);
-                            border: none;
-                            color: white;
-                            padding: 18px;
-                            border-radius: 12px;
-                            cursor: pointer;
-                            font-weight: bold;
-                            font-size: 1rem;
-                            text-align: left;
-                            display: flex;
-                            align-items: center;
-                            gap: 15px;
-                            transition: all 0.3s;
-                        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 20px rgba(102, 102, 102, 0.3)'" 
-                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                            <span style="font-size: 1.5rem;">⚙️</span>
-                            <div>
-                                <div>Settings</div>
-                                <small style="opacity: 0.8; font-weight: normal; font-size: 0.9rem;">Preferences & options</small>
-                            </div>
-                        </button>
-                        
-                        <button onclick="showHelp(); closeProfileModal();" style="
-                            background: linear-gradient(135deg, #FF8800, #CC6600);
-                            border: none;
-                            color: white;
-                            padding: 18px;
-                            border-radius: 12px;
-                            cursor: pointer;
-                            font-weight: bold;
-                            font-size: 1rem;
-                            text-align: left;
-                            display: flex;
-                            align-items: center;
-                            gap: 15px;
-                            transition: all 0.3s;
-                        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 20px rgba(255, 136, 0, 0.3)'" 
-                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                            <span style="font-size: 1.5rem;">❓</span>
-                            <div>
-                                <div>Help & Support</div>
-                                <small style="opacity: 0.8; font-weight: normal; font-size: 0.9rem;">Get assistance</small>
-                            </div>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Admin Privileges Section -->
-                ${isAdmin ? `
-                <div style="margin-bottom: 30px;">
-                    <h3 style="color: #FFD700; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                        <span>🔐</span> Admin Privileges
-                    </h3>
-                    <div style="display: flex; flex-wrap: wrap; gap: 10px; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 12px; border: 1px solid rgba(255, 215, 0, 0.3);">
-                        <div style="background: rgba(255, 215, 0, 0.2); color: #FFD700; padding: 8px 15px; border-radius: 8px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
-                            <span>✅</span> Bypass Cooldown
-                        </div>
-                        <div style="background: rgba(255, 215, 0, 0.2); color: #FFD700; padding: 8px 15px; border-radius: 8px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
-                            <span>🔍</span> Access Debug Tools
-                        </div>
-                        <div style="background: rgba(255, 215, 0, 0.2); color: #FFD700; padding: 8px 15px; border-radius: 8px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
-                            <span>📊</span> View Analytics
-                        </div>
-                        <div style="background: rgba(255, 215, 0, 0.2); color: #FFD700; padding: 8px 15px; border-radius: 8px; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
-                            <span>👥</span> View People Online
-                        </div>
-                        ${isMaster ? `
-                        <div style="background: rgba(255, 215, 0, 0.3); color: #000; padding: 8px 15px; border-radius: 8px; font-size: 0.9rem; font-weight: bold; display: flex; align-items: center; gap: 8px;">
-                            <span>👑</span> Master Admin Access
-                        </div>` : ''}
-                    </div>
-                    <div style="margin-top: 15px; padding: 12px; background: rgba(255, 215, 0, 0.05); border-radius: 8px; border: 1px dashed rgba(255, 215, 0, 0.3);">
-                        <div style="font-size: 0.9rem; color: #FFD700; display: flex; align-items: center; gap: 8px;">
-                            <span>🔑</span> <strong>Admin Password:</strong> 0122
-                        </div>
-                    </div>
-                </div>` : ''}
-                
-                <!-- System Info -->
-                <div style="margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-                    <h4 style="margin: 0 0 10px 0; color: #00FFFF; font-size: 1rem;">System Info</h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9rem;">
-                        <div>Session ID: <code style="background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px;">${Date.now().toString(36).toUpperCase()}</code></div>
-                        <div>Stories Loaded: <strong>${document.querySelectorAll('.card').length || 0}</strong></div>
-                        <div>Browser: <strong>${navigator.userAgent.split(' ')[0]}</strong></div>
-                        <div>Local Storage: <strong>${(JSON.stringify(localStorage).length / 1024).toFixed(2)} KB</strong></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Footer with Logout Button -->
-            <div style="
-                padding: 20px 25px;
-                background: rgba(231, 76, 60, 0.1);
-                border-top: 1px solid rgba(231, 76, 60, 0.3);
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            ">
-                <div style="opacity: 0.8; font-size: 0.9rem;">
-                    <strong>Omniverse v2.0</strong> • Last updated: ${new Date().toLocaleDateString()}
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <button onclick="logoutUser()" style="
-                        background: linear-gradient(135deg, #e74c3c, #c0392b);
-                        border: none;
-                        color: white;
-                        padding: 12px 25px;
-                        border-radius: 10px;
-                        cursor: pointer;
-                        font-weight: bold;
-                        font-size: 1rem;
-                        display: flex;
-                        align-items: center;
-                        gap: 8px;
-                        transition: all 0.3s;
-                    " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 5px 15px rgba(231, 76, 60, 0.4)'" 
-                       onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
-                        <span>🚪</span> Logout
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-    
-    // Close modal on escape key
-    modal.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeProfileModal();
-    });
-    
-    // Close modal when clicking outside
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) closeProfileModal();
-    });
-    
-    // Focus the modal for keyboard navigation
-    modal.focus();
-}
-
-// Helper functions for the profile modal
-function closeProfileModal() {
-    const modal = document.getElementById('userProfileModal');
-    if (modal) {
-        modal.style.opacity = '0';
-        modal.style.transform = 'scale(0.9)';
-        setTimeout(() => {
-            if (modal.parentNode) {
-                document.body.removeChild(modal);
-            }
-        }, 300);
+function loadUserData(userId) {
+    if (userData[userId]) {
+        userStats = userData[userId].stats || userStats;
+        localStorage.setItem('userStats', JSON.stringify(userStats));
+        updateUserStats();
     }
 }
-
-function showDetailedStats() {
-    const stats = {
-        name: localStorage.getItem(OMNIVERSE_CONFIG.storage.userName),
-        type: localStorage.getItem(OMNIVERSE_CONFIG.storage.userType) || 'user',
-        firstVisit: localStorage.getItem(OMNIVERSE_CONFIG.storage.firstVisit),
-        lastVisit: localStorage.getItem(OMNIVERSE_CONFIG.storage.lastVisit),
-        visits: localStorage.getItem(OMNIVERSE_CONFIG.storage.visitCount),
-        level: localStorage.getItem(OMNIVERSE_CONFIG.storage.userLevel)
-    };
-    
-    alert(`
-        📊 DETAILED USER STATISTICS 📊
-        ===============================
-        
-        👤 Identity:
-        • Name: ${stats.name}
-        • Account Type: ${stats.type === 'admin' ? '👑 Admin' : '👤 User'}
-        • User Level: ${stats.level}
-        • Total Visits: ${stats.visits}
-        
-        📅 Timeline:
-        • First Visit: ${stats.firstVisit ? new Date(stats.firstVisit).toLocaleString() : 'N/A'}
-        • Last Visit: ${stats.lastVisit ? new Date(stats.lastVisit).toLocaleString() : 'N/A'}
-        • Days Active: ${stats.firstVisit ? Math.floor((new Date() - new Date(stats.firstVisit)) / (1000 * 60 * 60 * 24)) : 'N/A'}
-        
-        🎯 Session Info:
-        • Current Session: ${new Date().toLocaleString()}
-        • Browser: ${navigator.userAgent.split(' ')[0]}
-        • Online: ${navigator.onLine ? '✅ Yes' : '❌ No'}
-        ${stats.type === 'admin' ? `• Admin Privileges: Enabled` : ''}
-        
-        💾 Storage:
-        • Local Storage: ${(JSON.stringify(localStorage).length / 1024).toFixed(2)} KB used
-        • Stories Saved: ${localStorage.getItem('bookmarkedStories') ? JSON.parse(localStorage.getItem('bookmarkedStories')).length : 0}
-        
-        Keep exploring the Omniverse! 🚀
-    `);
-}
-
-function showSettings() {
-    alert(`
-        ⚙️ SETTINGS PANEL ⚙️
-        ====================
-        
-        [Display Settings]
-        1. Theme: Dark/Light
-        2. Animations: On/Off
-        3. Notifications: On/Off
-        
-        [Account Settings]
-        1. Switch account type
-        2. Change display name
-        3. Privacy settings
-        
-        [Content Settings]
-        1. Default story view
-        2. Auto-save bookmarks
-        3. Reading preferences
-        
-        [Advanced Settings]
-        1. Debug mode
-        2. Experimental features
-        3. Reset all settings
-
-    `);
-}
-
-function showHelp() {
-    alert(`
-        ❓ HELP & SUPPORT ❓
-        ====================
-        
-        [Quick Guide]
-        • Click on stories to read
-        • Use search to find content
-        • Bookmark your favorites
-        • Check your profile for stats
-        
-        [Admin Features]
-        • View people online
-        • Access admin panel
-        • System analytics
-        • Security logs
-    
-        
-        [Need Help?]
-        Email: verseo445@gmail.com
-        Response time: 24-48 hours
-        
-        Thank you for using Omniverse! ✨
-    `);
-}
-
-// Guest Menu
-function showGuestMenu() {
-    const modal = document.createElement('div');
-    modal.id = 'guestMenuModal';
-    modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.85);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1002;
-        backdrop-filter: blur(10px);
-        padding: 20px;
-    `;
-    
-    modal.innerHTML = `
-        <div style="
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
-            padding: 40px;
-            border-radius: 20px;
-            border: 3px solid #00FFFF;
-            color: white;
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
-        ">
-            <div style="
-                width: 80px;
-                height: 80px;
-                border-radius: 50%;
-                background: linear-gradient(135deg, #666, #999);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 40px;
-                margin: 0 auto 20px;
-                border: 3px solid #00FFFF;
-            ">
-                👤
-            </div>
-            
-            <h2 style="color: #00FFFF; margin-bottom: 10px;">Guest User</h2>
-            <p style="opacity: 0.8; margin-bottom: 30px;">
-                You're currently browsing as a guest. Login to unlock all features!
-            </p>
-            
-            <button onclick="initEnhancedAuth(); closeGuestMenu();" style="
-                background: linear-gradient(135deg, #00FFFF, #0088FF);
-                border: none;
-                color: #000;
-                padding: 15px 30px;
-                border-radius: 12px;
-                cursor: pointer;
-                font-weight: bold;
-                font-size: 1.1rem;
-                width: 100%;
-                margin-bottom: 15px;
-                transition: all 0.3s;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-            " onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 5px 20px rgba(0, 255, 255, 0.3)'" 
-               onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
-                <span>🔓</span> Login / Register
-            </button>
-            
-            <div style="
-                margin-top: 30px;
-                padding-top: 20px;
-                border-top: 1px solid rgba(255,255,255,0.1);
-                text-align: left;
-            ">
-                <h4 style="color: #00FFFF; margin-bottom: 10px;">Features you'll unlock:</h4>
-                <ul style="margin: 0; padding-left: 20px; opacity: 0.8;">
-                    <li>Personalized reading experience</li>
-                    <li>Track your reading statistics</li>
-                    <li>Save bookmarks across devices</li>
-                    <li>Earn achievements and levels</li>
-                    <li>Choose admin or user account</li>
-                </ul>
-            </div>
-            
-            <button onclick="closeGuestMenu()" style="
-                background: none;
-                border: 1px solid #666;
-                color: #fff;
-                padding: 10px 20px;
-                border-radius: 8px;
-                cursor: pointer;
-                margin-top: 20px;
-                opacity: 0.7;
-            ">
-                Continue as Guest
-            </button>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-    
-    window.closeGuestMenu = function() {
-        const modal = document.getElementById('guestMenuModal');
-        if (modal) {
-            modal.style.opacity = '0';
-            modal.style.transform = 'scale(0.9)';
-            setTimeout(() => {
-                if (modal.parentNode) {
-                    document.body.removeChild(modal);
-                }
-            }, 300);
-        }
-    };
-    
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) closeGuestMenu();
-    });
-}
-
-// Floating Profile Button
-(function () {
-    if (window.omniverseFloatingReady) return;
-    window.omniverseFloatingReady = true;
-
-    // Create floating button container
-    const container = document.createElement('div');
-    container.style.cssText = `
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        z-index: 9999;
-        pointer-events: none;
-    `;
-    document.body.appendChild(container);
-
-    // The actual button
-    const button = document.createElement('div');
-    const userName = localStorage.getItem(OMNIVERSE_CONFIG.storage.userName);
-    const userType = localStorage.getItem(OMNIVERSE_CONFIG.storage.userType) || 'user';
-    const isAdmin = userType === 'admin' || (userName && OMNIVERSE_CONFIG.admin.names.includes(userName.toLowerCase()));
-    
-    button.innerHTML = isAdmin ? '👑' : (userName ? '👤' : '🔓');
-    button.style.cssText = `
-        width: 70px;
-        height: 70px;
-        background: ${isAdmin ? 'linear-gradient(135deg, #FFD700, #FF8C00)' : (userName ? 'linear-gradient(135deg, #00FFFF, #0088FF)' : 'linear-gradient(135deg, #666, #999)')};
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 34px;
-        color: #000;
-        cursor: pointer;
-        box-shadow: 0 10px 40px ${isAdmin ? 'rgba(255, 215, 0, 0.6)' : (userName ? 'rgba(0, 255, 255, 0.6)' : 'rgba(102, 102, 102, 0.6)')};
-        transition: all 0.4s ease;
-        pointer-events: all;
-        user-select: none;
-        border: 3px solid ${isAdmin ? 'rgba(255, 215, 0, 0.3)' : (userName ? 'rgba(0, 255, 255, 0.3)' : 'rgba(153, 153, 153, 0.3)')};
-    `;
-
-    // Hover effects
-    button.onmouseenter = () => {
-        button.style.transform = 'scale(1.25) rotate(360deg)';
-        button.style.boxShadow = `0 20px 50px ${isAdmin ? 'rgba(255, 215, 0, 0.8)' : (userName ? 'rgba(0, 255, 255, 0.8)' : 'rgba(102, 102, 102, 0.8)')}`;
-    };
-    button.onmouseleave = () => {
-        button.style.transform = 'scale(1) rotate(0)';
-        button.style.boxShadow = `0 10px 40px ${isAdmin ? 'rgba(255, 215, 0, 0.6)' : (userName ? 'rgba(0, 255, 255, 0.6)' : 'rgba(102, 102, 102, 0.6)')}`;
-    };
-
-    // Tooltip
-    const tooltip = document.createElement('div');
-    tooltip.textContent = isAdmin ? '👑 Admin Profile' : (userName ? `${userName}'s Profile` : 'Login / Profile');
-    tooltip.style.cssText = `
-        position: absolute;
-        bottom: 85px;
-        right: 10px;
-        background: rgba(0, 0, 0, 0.9);
-        color: ${isAdmin ? '#FFD700' : (userName ? '#00FFFF' : '#999')};
-        padding: 10px 18px;
-        border-radius: 12px;
-        font-size: 15px;
-        font-weight: bold;
-        white-space: nowrap;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s ease;
-        border: 1px solid ${isAdmin ? '#FFD700' : (userName ? '#00FFFF' : '#999')};
-        backdrop-filter: blur(10px);
-        box-shadow: 0 5px 20px ${isAdmin ? 'rgba(255, 215, 0, 0.2)' : (userName ? 'rgba(0, 255, 255, 0.2)' : 'rgba(153, 153, 153, 0.2)')};
-    `;
-    container.appendChild(tooltip);
-
-    button.onmouseenter = () => tooltip.style.opacity = '1';
-    button.onmouseleave = () => tooltip.style.opacity = '0';
-
-    // Click: Open user profile or guest menu
-    button.onclick = () => {
-        if (userName) {
-            showUserProfile();
-        } else {
-            showGuestMenu();
-        }
-    };
-
-    container.appendChild(button);
-
-    console.log('👤 Floating Profile Button Active');
-})();
 
 // Start everything when page loads
 if (document.readyState === 'loading') {
@@ -3550,8 +1664,33 @@ if (document.readyState === 'loading') {
 } else {
     init();
 }
-function updateHeroDisplay() {}
-// Enhanced Groups Feature with Click Tracking & WhatsApp Links
+
+// Simple user authentication modal handler
+if (emailAuthBtn) {
+    emailAuthBtn.addEventListener('click', () => {
+        const email = document.getElementById('emailInput').value;
+        const password = document.getElementById('passwordInput').value;
+        
+        if (email && password) {
+            // Simple mock authentication
+            currentUser = {
+                id: email.replace('@', '_').replace('.', '_'),
+                name: email.split('@')[0],
+                email: email
+            };
+            
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            loadUserData(currentUser.id);
+            updateUserUI(currentUser);
+            hideModal(authModal);
+            showNotification('Signed in successfully!');
+        } else {
+            showNotification('Please enter both email and password', 'error');
+        }
+    });
+}
+
+// Groups Feature with Click Tracking & WhatsApp Links
 document.addEventListener('DOMContentLoaded', () => {
     // Load joined + clicked status
     const customGroups = JSON.parse(localStorage.getItem('customJoinedGroups')) || [];
@@ -3577,13 +1716,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update "Your Circles" section
     function updateJoinedGroups() {
+        if (!joinedGroupsList) return;
         joinedGroupsList.innerHTML = '';
         if (customGroups.length === 0) {
-            emptyGroups.style.display = 'block';
+            if (emptyGroups) emptyGroups.style.display = 'block';
             return;
         }
 
-        emptyGroups.style.display = 'none';
+        if (emptyGroups) emptyGroups.style.display = 'none';
         customGroups.forEach(group => {
             const isClicked = hasClickedLink(group.link);
 
@@ -3634,53 +1774,71 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Create New Circle Button
-    createGroupBtn.addEventListener('click', () => {
-        const groupName = prompt('Enter the name of your new circle:');
-        if (!groupName?.trim()) return;
+    if (createGroupBtn) {
+        createGroupBtn.addEventListener('click', () => {
+            const groupName = prompt('Enter the name of your new circle:');
+            if (!groupName?.trim()) return;
 
-        const whatsappLink = prompt('Paste the WhatsApp group invite link:\n(e.g., https://chat.whatsapp.com/...)');
-        if (!whatsappLink || !whatsappLink.includes('chat.whatsapp.com')) {
-            alert('❌ Please enter a valid WhatsApp group invite link.');
-            return;
-        }
+            const whatsappLink = prompt('Paste the WhatsApp group invite link:\n(e.g., https://chat.whatsapp.com/...)');
+            if (!whatsappLink || !whatsappLink.includes('chat.whatsapp.com')) {
+                alert('❌ Please enter a valid WhatsApp group invite link.');
+                return;
+            }
 
-        const newGroupId = Date.now().toString();
-        const newGroup = {
-            id: newGroupId,
-            name: groupName.trim(),
-            link: whatsappLink.trim()
-        };
+            const newGroupId = Date.now().toString();
+            const newGroup = {
+                id: newGroupId,
+                name: groupName.trim(),
+                link: whatsappLink.trim()
+            };
 
-        // Add to grid
-        const newGroupCard = document.createElement('div');
-        newGroupCard.classList.add('group-card');
-        newGroupCard.dataset.groupId = newGroupId;
+            // Add to grid
+            if (groupGrid) {
+                const newGroupCard = document.createElement('div');
+                newGroupCard.classList.add('group-card');
+                newGroupCard.dataset.groupId = newGroupId;
 
-        newGroupCard.innerHTML = `
-            <div class="group-icon">
-                <i class="uil uil-users-alt"></i>
-            </div>
-            <h3>${newGroup.name}</h3>
-            <p>Your custom circle for discussing stories.</p>
-            <div class="group-meta">
-                <span>Members: 1+</span>
-                <span>Active Discussions: 0</span>
-            </div>
-            <a href="${newGroup.link}" target="_blank" class="btn whatsapp-btn" data-link="${newGroup.link}">
-                <i class="bx bxl-whatsapp"></i> Join Chat on WhatsApp
-            </a>
-        `;
+                newGroupCard.innerHTML = `
+                    <div class="group-icon">
+                        <i class="uil uil-users-alt"></i>
+                    </div>
+                    <h3>${newGroup.name}</h3>
+                    <p>Your custom circle for discussing stories.</p>
+                    <div class="group-meta">
+                        <span>Members: 1+</span>
+                        <span>Active Discussions: 0</span>
+                    </div>
+                    <a href="${newGroup.link}" target="_blank" class="btn whatsapp-btn" data-link="${newGroup.link}">
+                        <i class="bx bxl-whatsapp"></i> Join Chat on WhatsApp
+                    </a>
+                `;
 
-        groupGrid.appendChild(newGroupCard);
+                groupGrid.appendChild(newGroupCard);
+            }
 
-        // Save and update
-        customGroups.push(newGroup);
-        localStorage.setItem('customJoinedGroups', JSON.stringify(customGroups));
-        updateJoinedGroups();
+            // Save and update
+            customGroups.push(newGroup);
+            localStorage.setItem('customJoinedGroups', JSON.stringify(customGroups));
+            updateJoinedGroups();
 
-        alert('✅ New circle created successfully!\nYou can now join via WhatsApp.');
-    });
+            alert('✅ New circle created successfully!\nYou can now join via WhatsApp.');
+        });
+    }
 
     // Initial load
     updateJoinedGroups();
+});
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const aboutSection = document.getElementById('about');
+    const emojis = ['✨', '🚀', '💻', '📚', '🎮', '🌟', '⚡', '🔥'];
+    
+    for (let i = 0; i < 5; i++) {
+        const floatingElement = document.createElement('div');
+        floatingElement.className = `floating-element floating-${i + 1}`;
+        floatingElement.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        aboutSection.appendChild(floatingElement);
+    }
 });
