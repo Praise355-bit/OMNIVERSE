@@ -29,7 +29,7 @@ const OMNIVERSE_ENHANCED = {
     },
     
     security: {
-        bannedRegex: /(robot|ai|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$|assistant|deepseek|huggingface|openai)/i,
+        bannedRegex: /(robot|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$|assistant|deepseek|huggingface|openai)/i,
         minLength: 2,
         maxLength: 25,
         maxAttempts: 5,
@@ -917,15 +917,6 @@ class AdminPanel {
                         <button onclick="window.adminPanel.viewAllUsers()" class="admin-action-btn" style="background: linear-gradient(135deg, #00AAFF, #0088FF);">
                             👥 View All Users
                         </button>
-                        <button onclick="window.adminPanel.viewLogs()" class="admin-action-btn" style="background: linear-gradient(135deg, #00CC88, #00AA66);">
-                            📋 View Logs
-                        </button>
-                        <button onclick="window.adminPanel.sendAnnouncement()" class="admin-action-btn" style="background: linear-gradient(135deg, #FFAA00, #FF8800);">
-                            📢 Send Announcement
-                        </button>
-                        <button onclick="window.adminPanel.backupSystem()" class="admin-action-btn" style="background: linear-gradient(135deg, #AA00FF, #8800CC);">
-                            💾 Backup System
-                        </button>
                     </div>
                 </div>
                 
@@ -934,11 +925,11 @@ class AdminPanel {
                     <h4 style="margin-top: 0; color: #FFD700;">🕒 Recent Activity</h4>
                     <div id="recentAdminActivity" style="max-height: 300px; overflow-y: auto;">
                         <div style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                            <div>User "Alex" registered</div>
+                            <div>User "amy" registered</div>
                             <small style="opacity: 0.7;">5 minutes ago</small>
                         </div>
                         <div style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                            <div>Story "The Lost City" was published</div>
+                            <div>Story "neural" was published</div>
                             <small style="opacity: 0.7;">15 minutes ago</small>
                         </div>
                         <div style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">
@@ -2522,4 +2513,3 @@ document.addEventListener('DOMContentLoaded', () => {
 ╚═══════════════════════════════════════════════════════════╝
     `);
 });
-
