@@ -14,9 +14,8 @@ const OMNIVERSE_ENHANCED = {
     },
     
     admin: {
-        names: ['praise', 'fawaz', 'marvelous', 'henry', 'system'],
+        names: ['praise', 'fawaz',],
         master: 'praise',
-        experts: ['fawaz', 'marvelous'],
         password: '0122',
         privileges: {
             bypassCooldown: true,
@@ -30,8 +29,8 @@ const OMNIVERSE_ENHANCED = {
     
     security: {
         bannedRegex: /(robot|ai|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|^ai$|^bot$|assistant|deepseek|huggingface|openai)/i,
-        minLength: 2,
-        maxLength: 25,
+        minLength: 1,
+        maxLength: 20,
         maxAttempts: 5,
         cooldownTime: 30000
     },
