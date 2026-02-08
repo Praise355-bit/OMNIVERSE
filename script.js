@@ -1351,12 +1351,12 @@ function initializeSearch() {
     // Check for special numeric codes FIRST
     const specialCodes = {
         "0122": "illusion",
-        "1000": "cyberdragon", 
-        "1500": "eternalloop",
-        "2000": "story5000",
-        "2500": "story6000",
-        "7000": "story7000",
-        "8000": "Cyber"
+        "3322": "cyberdragon", 
+        "2233": "eternalloop",
+        "1256": "story5000",
+        "1760": "story6000",
+        "70yu": "story7000",
+        "805h": "Cyber"
     };
     
     // If it's a special code, show ONLY that story (even if hidden)
