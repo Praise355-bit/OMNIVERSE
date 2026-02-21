@@ -43,7 +43,7 @@ const OMNIVERSE = {
     },
 
     security: {
-        bannedRegex: /^(robot|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|ai|assistant|deepseek|huggingface|openai)$/i,
+        bannedRegex: /^(robot|ai|bot|grok|chatgpt|llm|gpt|claude|gemini|artificial|intelligence|synthetic|machine|ai|assistant|deepseek|huggingface|openai)$/i,
         minLength:   2,
         maxLength:   20,
         maxAttempts: 5,
